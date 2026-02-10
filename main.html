@@ -1,10 +1,106 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi sint, corporis dolores, ducimus perferendis iure sequi laudantium, dolore vero nisi beatae id aut voluptatibus illo minima possimus animi neque rem.</p>
-    </body>
+<html></html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Animo Eats</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a class="site-logo" href="main.html">Animo Eats</a>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="restaurant.html">Restaurants</a>
+                <!-- Add more navigation links here if needed -->
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="top-hero">
+            <div class="page-container hero-row">
+                <div class="hero-text">
+                    <h1>Discover restaurants for Lasallians</h1>
+                    <p class="sub">Reviews and simple guides to local dining spots.</p>
+
+                    <form class="search-form" role="search">
+                        <input type="search" name="q" placeholder="Search by name, cuisine, or location" />
+                        <select name="filter">
+                            <option value="">All</option>
+                            <option value="cafes">Cafes</option>
+                            <option value="fastfood">Fast food</option>
+                            <option value="sitdown">Sit-down</option>
+                        </select>
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+
+                <div class="hero-image">
+                    <div class="image-placeholder">visual</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout container">
+            <aside class="filters">
+                <h3>Filters</h3>
+                <form>
+                    <label>
+                        Distance
+                        <select>
+                            <option>Any</option>
+                            <option>Within 1 km</option>
+                            <option>Within 3 km</option>
+                        </select>
+                    </label>
+
+                    <fieldset>
+                        <legend>Price</legend>
+                        <label><input type="checkbox" /> $</label>
+                        <label><input type="checkbox" /> $$</label>
+                        <label><input type="checkbox" /> $$$</label>
+                    </fieldset>
+
+                    <button type="reset" class="small">Reset</button>
+                </form>
+            </aside>
+
+            <section class="results">
+                <h2 class="sr-only">Restaurant results</h2>
+
+                <div class="cards-grid">
+                    <article class="card placeholder">
+                        <div class="card-thumb"></div>
+                        <div class="card-body">
+                            <h3 class="title">Restaurant name</h3>
+                            <p class="meta">Cuisine • Location • Rating</p> 
+                            <!-- rating should be out of 5 (something like 5 stars ion know) -->
+                            <p class="excerpt">preview text preview text .</p>
+                        </div>
+                    </article>
+
+                    <article class="card placeholder">
+                        <div class="card-thumb"></div>
+                        <div class="card-body">
+                            <h3 class="title">Restaurant name</h3>
+                            <p class="meta">Cuisine • Location • Rating</p>
+                            <p class="excerpt">preview text preview text.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; Animo Eats — For the Lasallian community</p>
+            <nav class="footer-nav">
+                <a href="privacy.html">Privacy</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+</body>
 </html>
