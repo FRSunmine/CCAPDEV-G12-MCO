@@ -230,3 +230,92 @@ body {
   }
   .hero-row { gap: 16px; }
 }
+
+/* Login and Register Forms */
+.login-container,
+.register-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e9efe9;
+}
+
+.login-container h1,
+.register-container h1 {
+  color: #055a2f;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e6efe6;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007a33;
+  box-shadow: 0 0 5px rgba(0, 122, 51, 0.2);
+}
+
+.login-button,
+.register-button {
+  width: 100%;
+  padding: 12px;
+  background: #007a33;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.login-button:hover,
+.register-button:hover {
+  background: #055a2f;
+}
+
+.error-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-link,
+.signup-link {
+  text-align: center;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+.login-link a,
+.signup-link a {
+  color: #007a33;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover,
+.signup-link a:hover {
+  text-decoration: underline;
+}

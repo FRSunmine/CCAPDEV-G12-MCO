@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - Animo Eats</title>
+    <link rel="stylesheet" href="../assests/style.css" />
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a class="site-logo" href="main.html">Animo Eats</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="register-container">
+            <h1>Create Account</h1>
+            <form data-form="register">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required />
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required />
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required />
+                </div>
+                <div id="registerError" class="error-message"></div>
+                <button type="submit" class="register-button">Sign Up</button>
+            </form>
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; Animo Eats — For the Lasallian community</p>
+        </div>
+    </footer>
+
+    <script src="../processes/script.js" defer></script>
+</body>
+</html>
