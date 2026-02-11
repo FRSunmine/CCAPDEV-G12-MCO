@@ -137,7 +137,7 @@ body {
 /* layout */
 .layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: 24px;
   padding: 24px 0 48px;
 }
@@ -150,10 +150,12 @@ body {
   border: 1px solid #e9efe9;
   font-size: 15px;
 }
-.filters h3 { margin: 0 0 10px; color: #055a2f; }
+.filters h3 { 
+  margin: 0 0 10px; 
+  color: #055a2f; 
+}
 
 /* results */
-.results { }
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -168,13 +170,28 @@ body {
   display: flex;
   gap: 12px;
   border: 1px solid #eef6ee;
+  height: 200px;
+  overflow: hidden;
 }
 .card-thumb {
-  width: 96px;
-  height: 72px;
+  width: 80px;   /* fixed width */
+  height: 80px;   /* fixed height */
   background: #f8f9f8;
   border-radius: 6px;
+  overflow: hidden; /* crop anything outside */
+  flex-shrink: 0;   /* prevent shrinking in flex layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills box, crops if needed */
+  display: block;
+}
+
 .card-body .title {
   margin: 0 0 6px;
   font-weight: 700;
@@ -186,7 +203,33 @@ body {
   margin: 0;
   color: #6b7280;
   font-size: 14px;
+  max-height: 150px; /* restrict text block height */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
+/* cuisine_type filter tags */
+.cuisine-list {
+  margin: 6px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cuisine-btn {
+  background-color: #e6f4ea;
+  color: #055a2f;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.cuisine-btn:hover {
+  background-color: #cce3d6;
+}
+
 
 /* footer - darker grey */
 .site-footer {
@@ -325,13 +368,55 @@ body {
 }
 
 /* Welcome Page */
-#welcome-bg-cover{
+#welcome-bg-cover {
   background-image: url('https://scontent.fmnl17-5.fna.fbcdn.net/v/t39.30808-6/508405627_10162421585754760_2434342301252479443_n.jpg?stp=dst-jpg_s590x590_tt6&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=GVm0LsXDTHkQ7kNvwHMWqhp&_nc_oc=AdkoMHtlgxDcXobxbQsm8J_CnMTodf-kc2fNCn9t1QotZElNbJYKzwH5-QhEPYrdWAA&_nc_zt=23&_nc_ht=scontent.fmnl17-5.fna&_nc_gid=pSMjuxQhq2rWahsiSajIXg&oh=00_Afv_ezegR0q3CerX8Bc_NUBqTkGB4812AvKHxnS8MXmLEg&oe=69920F89');
   background-size: cover;
   background-position: center;
-  height: 1000px;
+  height: 750px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+#welcome-bg-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: inherit;
+  background-size: cover;
+  background-position: center;
   filter: blur(3px);
+  z-index: 0;
+}
+
+/* content sits above the blurred background */
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #ffffff;
+  font-size: 32px;
+  text-shadow: 12px 12px 20px rgba(0,0,0,0.9);
+}
+
+.welcome-content h1 {
+  font-size: 72px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.welcome-btn-search-restaurants {
+  font-size: 20px;
+  padding: 16px 32px;
+  border-radius: 20px;
+  background-color: #055a2f;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.welcome-btn-search-restaurants:hover {
+  background-color: #077a42;
 }
