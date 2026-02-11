@@ -16,7 +16,7 @@
             <a href="welcome.html"><img src="../img/AnimoEats-Logo2.png" class="site-logo"></a>
             </div>
             <nav class="nav-links">
-                <a href="main.html">Home</a>
+                <a href="main.html">Search</a>
                 <a href="restaurant.html">Restaurants</a>
                 <a href="login.html">Login</a>
                 <!-- Add more navigation links here if needed -->
@@ -64,9 +64,9 @@
 
                     <fieldset>
                         <legend>Price</legend>
-                        <label><input type="checkbox" /> $</label>
-                        <label><input type="checkbox" /> $$</label>
-                        <label><input type="checkbox" /> $$$</label>
+                        <label><input type="checkbox" /> ₱</label>
+                        <label><input type="checkbox" /> ₱₱</label>
+                        <label><input type="checkbox" /> ₱₱₱</label>
                     </fieldset>
 
                     <button type="reset" class="small">Reset</button>
@@ -76,13 +76,13 @@
             <section class="results">
                 <h2 class="sr-only">Restaurant results</h2>
 
-                <div class="cards-grid">
-                    <article class="card placeholder">
+                <div class="cards-grid" id="cards-grid">
+                    <script src="../processes/generateRestaurantCards.js" defer></script>
+                    <!-- <article class="card placeholder">
                         <div class="card-thumb"></div>
                         <div class="card-body">
                             <h3 class="title">Restaurant name</h3>
                             <p class="meta">Cuisine • Location • Rating</p> 
-                            <!-- rating should be out of 5 (something like 5 stars ion know) -->
                             <p class="excerpt">preview text preview text .</p>
                         </div>
                     </article>
@@ -94,7 +94,7 @@
                             <p class="meta">Cuisine • Location • Rating</p>
                             <p class="excerpt">preview text preview text.</p>
                         </div>
-                    </article>
+                    </article> -->
                 </div>
             </section>
         </section>
