@@ -911,4 +911,56 @@ body {
 
 .review-card {
   flex: 1;
+  position: relative; 
 }
+
+/* Review drop-down (edit and delete option) */
+.review-dropdown {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+}
+
+.review-dropdown summary {
+  list-style: none;
+  user-select: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #2f6b4a;
+  background: rgba(5,90,47,0.04);
+  border: 1px solid rgba(5,90,47,0.06);
+  line-height: 1;
+}
+.review-dropdown summary::-webkit-details-marker { display: none; }
+
+.review-dropdown .review-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  min-width: 140px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  padding: 6px;
+  flex-direction: column;
+}
+
+.review-dropdown[open] .review-dropdown-menu { display: flex; }
+
+.review-dropdown-item {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  width: 100%;
+  color: #223;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.review-dropdown-item:hover { background: #f2f7f2; }
+.review-dropdown-item.delete { color: #d23f35; }
