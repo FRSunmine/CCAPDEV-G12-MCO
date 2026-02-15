@@ -246,7 +246,7 @@ body {
   height: 200px;
   overflow: hidden;
 }
-.card:hover{
+.card:not(.profile-view-card):hover{
   background: #d9f7e8;
 }
 
@@ -587,6 +587,58 @@ body {
 .welcome-btn-search-restaurants:hover {
   background-color: #077a42;
 }
+
+/* profile page view cards */
+.profile-view-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 22px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.profile-view-card .card-thumb {
+  width: 160px;
+  height: 160px;
+  flex: 0 0 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f6f9f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-view-card .card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-view-card .title {
+  font-size: 24px;
+}
+
+.profile-view-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.profile-view-card .meta {
+  font-size: 14px;
+  color: #6b7a78;
+}
+
+.profile-view-card .excerpt {
+  font-size: 15px;
+  color: #495256;
+  margin-top: 8px;
+}
+
 
 /* profile page sidebar */
 .profile-sidebar {
