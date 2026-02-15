@@ -48,14 +48,26 @@
         "password": "NA"
       }
     },
-        {
+      {
       "userID": "user00005",
       "username": "Tyler",
       "email": "tylerthecreator@example.com",
       "profilePic": "../../img/profiles/user00005.png",
-      "handle": "@@tylerDaCreator_",
+      "handle": "@tylerDaCreator_",
       "accountCreated": "2004-12-05T09:10:00.000Z",
       "bio": "Just a food lover who enjoys trying new restaurants!",
+      "metadata": {
+        "password": "NA"
+      }
+    },
+      {
+      "userID": "user00006",
+      "username": "NotoMaki",
+      "email": "notomaki@example.com",
+      "profilePic": "../../img/profiles/user00006.png",
+      "handle": "@notomakikiXD",
+      "accountCreated": "2004-12-05T09:10:00.000Z",
+      "bio": "I like sushi maki!",
       "metadata": {
         "password": "NA"
       }
