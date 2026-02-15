@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>User Profile — Animo Eats</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <a href="main.html"><img src="../img/AnimoEats-Logo2.png" class="site-logo" alt="Animo Eats logo"></a>
+      </div>
+      <nav class="nav-links">
+        <a href="main.html">Search</a>
+        <a href="restaurants.html">Restaurants</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="top-hero">
+      <div class="page-container hero-row">
+        <div class="hero-text">
+          <h1>User Profile</h1>
+          <p class="sub">Manage your public profile and reviews.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout container">
+      <aside class="filters" aria-labelledby="profile-options">
+        <h3 id="profile-options">Profile Settings</h3>
+        <div class="left-actions">
+          <button id="left-edit" class="register-button small-button" type="button">Edit profile</button>
+        </div>
+      </aside>
+
+      <section class="results">
+        <article id="profile-view" class="card profile-card">
+          <div class="card-thumb">
+            <img id="profile-avatar" src="../assets/default-avatar.png" alt="avatar">
+          </div>
+
+          <div class="card-body">
+            <h2 id="profile-name" class="title">Current User</h2>
+            <p id="profile-meta" class="meta">@currentuser • Member since 2024</p>
+            <p id="profile-bio" class="excerpt">Short bio or description shown on public profile.</p>
+          </div>
+        </article>
+
+        <article id="profile-edit" class="card login-container" style="display:none;">
+          <h3>Edit Profile</h3>
+          <form id="profile-form">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input id="username" name="username" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="avatar">Change avatar</label>
+              <input id="avatar" name="avatar" type="file" accept="image/*" />
+              <img id="avatar-preview" src="../assets/default-avatar.png" alt="preview" style="width:80px;height:80px;margin-top:8px;border-radius:6px;">
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-start;margin-top:10px;">
+              <button type="submit" class="register-button small-button">Save</button>
+              <button type="button" id="cancel-edit" class="login-button">Cancel</button>
+            </div>
+          </form>
+        </article>
+
+        <h3 style="color:#055a2f;margin:28px 0 12px;">Latest reviews</h3>
+        <div class="cards-grid">
+          <article class="card">
+            <div class="card-thumb"><img src="../assets/sample-restaurant.jpg" alt="thumb"></div>
+            <div class="card-body">
+              <h4 class="title">Zark's Burger</h4>
+              <p class="meta">4.6 • Fast Food</p>
+              <p class="excerpt">It's fresh. It's huge. It's great.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© Animo Eats</p>
+    </div>
+  </footer>
+
+  <script src="../assets/profile.js" defer></script>
+</body>
+</html>
