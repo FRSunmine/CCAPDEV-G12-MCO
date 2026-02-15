@@ -13,7 +13,7 @@
 
     <script src="../processes/filterRestaurants.js"></script>
 </head>
-<body>
+<body> 
     <header class="header">
         <div class="header-container">
             <div class="logo-container">
@@ -27,6 +27,20 @@
             </nav>
         </div>
     </header>
+
+    <!-- DEV: profile redirect button !!! -->
+    <div style="padding:12px 24px;">
+        <button id="dev-profile-btn" class="register-button small-button" style="width:220px; padding:8px 14px; font-size:15px;">
+        Open Profile
+        </button>
+    </div>
+
+    <script>
+        document.getElementById('dev-profile-btn').onclick = function () {
+        location.href = 'profile.html';
+        };
+    </script>
+    <!-- DEV: profile redirect button !!! --> 
 
     <main>
         <section class="top-hero">
@@ -78,23 +92,7 @@
                 <h2 class="sr-only">Restaurant results</h2>
 
                 <div class="cards-grid" id="cards-grid">
-                    <!-- <article class="card placeholder">
-                        <div class="card-thumb"></div>
-                        <div class="card-body">
-                            <h3 class="title">Restaurant name</h3>
-                            <p class="meta">Cuisine • Location • Rating</p> 
-                            <p class="excerpt">preview text preview text .</p>
-                        </div>
-                    </article>
-
-                    <article class="card placeholder">
-                        <div class="card-thumb"></div>
-                        <div class="card-body">
-                            <h3 class="title">Restaurant name</h3>
-                            <p class="meta">Cuisine • Location • Rating</p>
-                            <p class="excerpt">preview text preview text.</p>
-                        </div>
-                    </article> -->
+                    <!-- JS will populate restaurant cards here -->
                 </div>
             </section>
         </section>
