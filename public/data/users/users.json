@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "userID": "user00001",
+      "username": "AniMonstah123",
+      "email": "animonstah123@example.com",
+      "profilePic": "../../img/profiles/user00001.png",
+      "handle": "@animonstah123",
+      "accountCreated": "2026-02-10T07:43:00.000Z",
+      "bio": "AniMo stah",
+      "metadata": {
+        "password": "NA"
+      }
+    },
+    {
+      "userID": "user00002",
+      "username": "NagugutomAko_lolz",
+      "email": "gutomnako@example.com",
+      "profilePic": "../../img/profiles/user00002.png",
+      "handle": "@janedoe",
+      "accountCreated": "2026-01-20T15:22:00.000Z",
+      "bio": "Food blogger and reviewer. Loves exploring new restaurants.",
+      "metadata": {
+        "password": "NA"
+      }
+    },
+    {
+      "userID": "user00003",
+      "username": "MrFeast2000",
+      "email": "mrfeast2000@example.com",
+      "profilePic": "../../img/profiles/user00003.png",
+      "handle": "@MrFeast2K",
+      "accountCreated": "2025-12-05T09:10:00.000Z",
+      "bio": "MrFeast hindi MrBeast",
+      "metadata": {
+        "password": "NA"
+      }
+    },
+        {
+      "userID": "user00004",
+      "username": "Artrytease",
+      "email": "artrytease@example.com",
+      "profilePic": "../../img/profiles/user00004.png",
+      "handle": "@Artrytease",
+      "accountCreated": "2025-12-05T09:10:00.000Z",
+      "bio": "Ar-try-tease ouchie",
+      "metadata": {
+        "password": "NA"
+      }
+    },
+        {
+      "userID": "user00005",
+      "username": "Tyler",
+      "email": "tylerthecreator@example.com",
+      "profilePic": "../../img/profiles/user00005.png",
+      "handle": "@@tylerDaCreator_",
+      "accountCreated": "2004-12-05T09:10:00.000Z",
+      "bio": "Just a food lover who enjoys trying new restaurants!",
+      "metadata": {
+        "password": "NA"
+      }
+    }
+  ]
+}
