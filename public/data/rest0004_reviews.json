@@ -1,0 +1,12 @@
+[
+  {
+    "user": "Tyler",
+    "userID": "user00005",
+    "reviewID": "rev00001",
+    "reviewTitle": "Like Sugar on My Tongue",
+    "reviewMessage": "So sweet.",
+    "rating": 4,
+    "howHelpfulCount": 3,
+    "createdAt": "2026-02-15T09:01:00.000Z"
+  }
+]
