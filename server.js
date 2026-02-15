@@ -8,8 +8,26 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
+const hbs = exphbs.create({
+  extname: "hbs",
+  helpers: {
+    formatDate: function (dateString) {
+      const date = new Date(dateString);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      };
+      return date.toLocaleString("en-US", options);
+    }
+  }
+});
+
 // Configure Handlebars
-app.engine("hbs", exphbs.engine({ extname: "hbs" }));
+app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
 

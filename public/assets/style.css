@@ -690,30 +690,15 @@ body {
   color: #666;
 }
 
-.cuisine-list {
-  margin: 10px 0;
-}
-
-.cuisine-btn {
-  display: inline-block;
-  background: #eee;
-  border-radius: 20px;
-  padding: 5px 12px;
-  margin: 3px;
-  font-size: 0.85rem;
-  color: #444;
-}
-
 .excerpt {
   margin-top: 10px;
   font-size: 0.95rem;
   color: #555;
 }
 /* Reviews section */
-/* Center the reviews section */
 .reviews-section {
-  max-width: 600px;   /* one column width */
-  margin: 0 auto;     /* center horizontally */
+  max-width: 600px;
+  margin: 0 auto;
   padding: 20px;
 }
 
