@@ -675,6 +675,13 @@ body {
   margin: 0 0 20px 0;
 }
 
+.profile-review-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 6px 0 8px;
+  color: #111;           /* strong title color like example */
+  line-height: 1.05;
+}
 
 
 
