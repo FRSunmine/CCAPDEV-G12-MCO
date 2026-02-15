@@ -1,0 +1,32 @@
+[
+  {
+    "user": "AniMonstah123",
+    "userID": "00001",
+    "reviewID": "rev00001",
+    "reviewTitle": "Jack Daniels all the Way!",
+    "reviewMessage": "Loved the flavored chicken especially Jack Daniels! Hindi matipid sa sauce!",
+    "rating": 5,
+    "howHelpfulCount": 12,
+    "createdAt": "2026-02-13T07:43:00.000Z"
+  },
+  {
+    "user": "NagugutomAko_lolz",
+    "userID": "00002",
+    "reviewID": "rev00003",
+    "reviewTitle": "Good but pricey",
+    "reviewMessage": "The chicken was tasty but the portion size was small for the price.",
+    "rating": 3,
+    "howHelpfulCount": 4,
+    "createdAt": "2026-02-14T15:20:00.000Z"
+  },
+  {
+    "user": "MrFeast2000",
+    "userID": "00003",
+    "reviewID": "rev00004",
+    "reviewTitle": "Waiting Time Too LONG",
+    "reviewMessage": "Generally the chicken is good but being late to class is not worth it. Took me around 15-20 mins waiting time.",
+    "rating": 4,
+    "howHelpfulCount": 2,
+    "createdAt": "2026-02-14T18:31:00.000Z"
+  }
+]

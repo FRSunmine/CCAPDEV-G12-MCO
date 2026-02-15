@@ -54,15 +54,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       card.innerHTML = `
-          <div class="card-thumb">
-            <img src="${r.image_src}" alt="${r.name}">
-          </div>
-          <div class="card-body">
-            <h3 class="title"><a href="${r.reviews_url}" target="_blank">${r.name}</a></h3>
-            <p class="meta">${r.location} <br>${r.price_range} • ${stars} ${r.rating}</p>
-            <div class="cuisine-list">${cuisineButtons}</div>
-            <p class="excerpt">${r.preview_description}</p>
-          </div>
+        <div class="card-thumb">
+          <img src="${r.image_src}" alt="${r.name}">
+        </div>
+        <div class="card-body">
+          <h3 class="title">
+            <a href="/pages/restaurants/${r.id}">${r.name}</a>
+          </h3>
+          <p class="meta">${r.location} <br>${r.price_range} • ${stars} ${r.rating}</p>
+          <div class="cuisine-list">${cuisineButtons}</div>
+          <p class="excerpt">${r.preview_description}</p>
+        </div>
       `;
       grid.appendChild(card);
     });

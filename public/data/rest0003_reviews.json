@@ -1,0 +1,22 @@
+[
+  {
+    "user": "Artrytease",
+    "userID": "user00004",
+    "reviewID": "rev00001",
+    "reviewTitle": "Great bbq",
+    "reviewMessage": "The foods are great and the bbq flavors are smoky and savory. The wait time is negligible, free soup, and not pricy. The atmosphere is friendly and kinda homey or familiar. Some of the grilled fish like tuna are not in the menu board, but they have a picture of it around the place. Would like to order it but it's not on the menu board at the cashier. Other than that it was a great experience.",
+    "rating": 5,
+    "howHelpfulCount": 12,
+    "createdAt": "2026-02-14T09:09:00.000Z"
+  },
+  {
+    "user": "MrFeast2000",
+    "userID": "user00003",
+    "reviewID": "rev00005",
+    "reviewTitle": "Ihawan pa more",
+    "reviewMessage": "Ihawan pa more, I personally recommend their sisig, grilled liempo, and chicken inasal",
+    "rating": 4,
+    "howHelpfulCount": 3,
+    "createdAt": "2026-02-14T18:37:00.000Z"
+  }
+]
