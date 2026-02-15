@@ -65,8 +65,10 @@ body {
   padding: 6px 18px;
   border-radius: 6px;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 600; 
+  font-family: inherit;
 }
+
 .nav-links a:hover {
   background: rgba(255,255,255,0.06);
   color: #ffffff;
@@ -244,7 +246,7 @@ body {
   height: 200px;
   overflow: hidden;
 }
-.card:hover{
+.card:not(.profile-view-card):hover{
   background: #d9f7e8;
 }
 
@@ -584,4 +586,215 @@ body {
 
 .welcome-btn-search-restaurants:hover {
   background-color: #077a42;
+}
+
+/* profile page view cards */
+.profile-view-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 22px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.profile-view-card .card-thumb {
+  width: 160px;
+  height: 160px;
+  flex: 0 0 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f6f9f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-view-card .card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-view-card .title {
+  font-size: 24px;
+}
+
+.profile-view-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.profile-view-card .meta {
+  font-size: 14px;
+  color: #6b7a78;
+}
+
+.profile-view-card .excerpt {
+  font-size: 15px;
+  color: #495256;
+  margin-top: 8px;
+}
+
+
+/* profile page sidebar */
+.profile-sidebar {
+  width: 210px;
+  padding: 22px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 8px 20px rgba(5,90,47,0.04);
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+
+
+
+/* Review Template */
+
+/* Restaurant header */
+.restaurant-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  margin-left: 20%;
+  margin-right: 20%;
+  border: 1px solid #e6efe6;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.restaurant-logo img {
+  width: 150px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.restaurant-details .title {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.restaurant-details .meta {
+  margin: 10px 0;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.cuisine-list {
+  margin: 10px 0;
+}
+
+.cuisine-btn {
+  display: inline-block;
+  background: #eee;
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin: 3px;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.excerpt {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+/* Reviews section */
+/* Center the reviews section */
+.reviews-section {
+  max-width: 600px;   /* one column width */
+  margin: 0 auto;     /* center horizontally */
+  padding: 20px;
+}
+
+.reviews-section h2 {
+  margin: 0;
+}
+
+/* Review card styling */
+.review-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Profile section */
+.review-meta {
+  margin-bottom: 10px;
+}
+
+.review-meta .username {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.review-meta .date {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0;
+}
+
+
+/* Review message */
+.review-message h4 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #222;
+}
+
+.review-message .rating {
+  font-weight: bold;
+  color: #444;
+  margin: 0 0 5px 0;
+}
+
+.review-message .msg {
+  margin: 0;
+  padding: 0px 10px;
+  font-size: 0.95rem;
+  color: #555;
+  background-color: #f0fff0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Helpful buttons */
+.review-helpful {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.helpful-btn,
+.unhelpful-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.helpful-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.unhelpful-btn {
+  background: #f44336;
+  color: white;
 }

@@ -1,0 +1,58 @@
+<main>
+  <!-- Restaurant Header -->
+  <section class="restaurant-header">
+    <div class="restaurant-logo">
+      <img src="{{restaurant.image_src}}" alt="{{restaurant.name}}">
+    </div>
+    <div class="card-body restaurant-details">
+    <h3 class="title">
+        {{restaurant.name}}
+    </h3>
+    <p class="meta">
+        {{restaurant.location}} <br>
+        {{restaurant.price_range}} • ★ {{restaurant.rating}}
+    </p>
+    <div class="cuisine-list">
+        {{#each restaurant.cuisine_type}}
+        <span class="cuisine-btn">{{this}}</span>
+        {{/each}}
+    </div>
+    <p class="excerpt">{{restaurant.preview_description}}</p>
+    </div>
+  </section>
+
+    <!-- Restaurant Reviews -->
+    <section class="reviews-section">
+    <h2>Reviews</h2>
+
+    {{#if hasReviews}}
+        {{#each reviews}}
+        <article class="review-card">
+        <!-- Profile -->
+        <div class="review-profile">
+            <div class="review-meta">
+            <h3 class="username">{{this.user}}</h3>
+            <p class="date">{{this.createdAt}}</p>
+            </div>
+        </div>
+
+        <!-- Review Message -->
+        <div class="review-message">
+            <h4>{{this.reviewTitle}}</h4>
+            <p class="rating">Rating: {{this.rating}}/5</p>
+            <p class="msg">{{this.reviewMessage}}</p>
+        </div>
+
+        <!-- Helpful Count -->
+        <div class="review-helpful">
+            <button class="helpful-btn">Helpful</button>
+            <button class="unhelpful-btn">Unhelpful</button>
+            <p>👍: {{this.howHelpfulCount}}</p>
+        </div>
+        </article>
+        {{/each}}
+    {{else}}
+        <p class="no-reviews">No Reviews Found</p>
+    {{/if}}
+    </section>
+</main>

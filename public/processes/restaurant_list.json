@@ -1,6 +1,8 @@
 [
   {
     "name": "24 Chicken",
+    "id": "rest0001",
+    "reviews_url": "/pages/restaurants/24_chicken.html",
     "location": "EGI Taft Tower",
     "cuisine_type": ["Korean", "Chicken", "Fast Food"],
     "rating": 4.6,
@@ -11,6 +13,8 @@
   },
   {
     "name": "Prelude Cafe & Restuarant",
+    "id": "rest0002",
+    "reviews_url": "/pages/restaurants/prelude_cafe_and_restaurant.html",
     "location": "Fidel A. Reyes St.",
     "cuisine_type": ["Coffee Shop", "Casual"],
     "rating": 4.7,
@@ -21,6 +25,8 @@
   },
   {
     "name": "Tinuhog ni Benny",
+    "id": "rest0003",
+    "reviews_url": "/pages/restaurants/tinuhog_ni_benny.html",
     "location": "Dagonoy St.",
     "cuisine_type": ["Filipino"],
     "rating": 4.4,
@@ -31,6 +37,8 @@
   },
   {
     "name": "Royaltea皇茶",
+    "id": "rest0004",
+    "reviews_url": "/pages/restaurants/royaltea.html",
     "location": "WH Taft Residences",
     "cuisine_type": ["Chinese", "Milktea"],
     "rating": 4.2,
@@ -41,6 +49,8 @@
   },
     {
     "name": "Zark's Burger",
+    "id": "rest0005",
+    "reviews_url": "/pages/restaurants/zarks_burger.html",
     "location": "Burgundy Transpacific Place",
     "cuisine_type": ["Fast Food", "Burger", "Chicken", "Casual"],
     "rating": 4.6,
@@ -51,6 +61,8 @@
   },
   {
     "name": "Food Mob",
+    "id": "rest0006",
+    "reviews_url": "/pages/restaurants/food_mob.html",
     "location": "D' University Place",
     "cuisine_type": ["Fast Food", "Burger", "Chicken"],
     "rating": 1.7,
@@ -61,6 +73,8 @@
   },
   {
     "name": "El Poco Cantina",
+    "id": "rest0007",
+    "reviews_url": "/pages/restaurants/el_poco_cantina.html",
     "location": "Estrada St.",
     "cuisine_type": ["Mexican"],
     "rating": 4.5,
@@ -71,6 +85,8 @@
   },
   {
     "name": "On The Way",
+    "id": "rest0008",
+    "reviews_url": "/pages/restaurants/on_the_way.html",
     "location": "Leon Guinto St.",
     "cuisine_type": ["Fast Food", "Coffee Shop", "Burger", "Chicken"],
     "rating": 4.9,
