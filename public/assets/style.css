@@ -373,7 +373,7 @@ body {
 }
 
 .inset-info {
-  padding: 16px;
+  padding: 0px 20px;
   overflow-y: auto;
 }
 
@@ -384,10 +384,21 @@ body {
 }
 
 .inset-info p {
-  font-size: 16px;
+  font-size: 18px;
   margin: 4px 0;
   color: #333;
 }
+
+.top-review {
+  font-size: 16px;
+  padding: 0 5px;
+  color: #555;
+  background-color: #f0fff0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-style: italic;
+}
+
 
 
 /* footer - darker grey */
@@ -697,9 +708,15 @@ body {
 }
 /* Reviews section */
 .reviews-section {
-  max-width: 600px;
-  margin: 0 auto;
+  /*max-width: 700px;*/
+  margin-right: 20%;
   padding: 20px;
+}
+
+.no-reviews-section{
+  text-align: center;
+  padding: 20px;
+  margin: 0;
 }
 
 .reviews-section h2 {
@@ -717,13 +734,29 @@ body {
 }
 
 /* Profile section */
-.review-meta {
+.review-profile {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.review-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2; /* keeps it tight for 2 lines */
 }
 
 .review-meta .username {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #333;
 }
@@ -782,4 +815,82 @@ body {
 .unhelpful-btn {
   background: #f44336;
   color: white;
+}
+
+
+/* Add Review Button */
+.add-review-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.add-review-btn {
+  background-color: #007a33;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-review-btn:hover {
+  background-color: #45a049;
+}
+
+/* Filter Container */
+.reviews-layout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* Filter container */
+.review-filter {
+  flex: 0 0 180px;
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e9efe9;
+  font-size: 20px;
+  margin-left: 20%;
+  margin-top: 3.5%;
+}
+
+.review-filter h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+
+.filter-btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e6efe6;
+  font-size: 15px;
+  margin-bottom: 10px;
+  background: #007a33;
+  color: #fff;
+  font-weight: bolder;
+  width: 100%;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  background-color: #ddd;
+}
+
+/* Reviews section stays full width next to filter */
+.reviews-section {
+  flex: 1;
+}
+
+.reviews-section h2 {
+  width: 100%;
+}
+
+.review-card {
+  flex: 1;
 }

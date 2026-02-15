@@ -159,13 +159,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const restaurant = JSON.parse(card.dataset.restaurant);
 
+    // Fill inset info
     insetInfo.innerHTML = `
       <h2>${restaurant.name}</h2>
       <p><strong>Location:</strong> ${restaurant.location}</p>
       <p><strong>Price Range:</strong> ${restaurant.price_range}</p>
       <p><strong>Rating:</strong> ${restaurant.rating}</p>
-      <p>${restaurant.preview_description}</p>
+      <p>${restaurant.preview_description}</p><br>
+      <p><strong>Top Review:</strong></p>
+      <div class="top-review">Loading top review...</div>
     `;
+
+    // Fetch reviews JSON for this restaurant
+    fetch(`/data/${restaurant.id}_reviews.json`)
+      .then(res => res.ok ? res.json() : [])
+      .then(reviews => {
+        const reviewDiv = insetInfo.querySelector(".top-review");
+        if (Array.isArray(reviews) && reviews.length > 0) {
+          // Find highest-rated review
+          const topReview = reviews.reduce((best, current) =>
+            current.rating > (best?.rating || 0) ? current : best, null);
+
+          // Truncate message
+          const truncated = topReview.reviewMessage.length > 120
+            ? topReview.reviewMessage.slice(0, 120) + "..."
+            : topReview.reviewMessage;
+
+          reviewDiv.textContent = `"${truncated}" — ${topReview.user}`;
+        } else {
+          reviewDiv.textContent = "No reviews yet.";
+        }
+      })
+      .catch(() => {
+        const reviewDiv = insetInfo.querySelector(".top-review");
+        if (reviewDiv) reviewDiv.textContent = "No reviews yet.";
+      });
 
     inset.classList.add("open");
     backdrop.style.display = "block";
