@@ -1,0 +1,38 @@
+<main>
+  <div class="register-container">
+    <h1>Create Account</h1>
+    <form method="POST" action="/auth/register">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" value="{{formData.firstName}}" required />
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" value="{{formData.lastName}}" required />
+      </div>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" value="{{formData.username}}" required />
+      </div>
+      <div class="form-group">
+        <label for="registerEmail">Email</label>
+        <input type="email" id="registerEmail" name="email" value="{{formData.email}}" required />
+      </div>
+      <div class="form-group">
+        <label for="registerPassword">Password</label>
+        <input type="password" id="registerPassword" name="password" required />
+      </div>
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="3">{{formData.bio}}</textarea>
+      </div>
+      {{#if error}}
+        <div class="error-message">{{error}}</div>
+      {{/if}}
+      <button type="submit" class="register-button">Sign Up</button>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="/login">Login here</a>
+    </div>
+  </div>
+</main>

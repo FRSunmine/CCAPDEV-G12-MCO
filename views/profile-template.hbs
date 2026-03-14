@@ -1,41 +1,93 @@
-<div class="profile-header card profile-view-card">
-  <div class="card-thumb profile-pic">
-    <img src="{{profile.profilePic}}" alt="{{profile.username}}" loading="lazy"
-         onerror="this.onerror=null;this.src='/img/default_profile.png'">
-  </div>
-  <div class="card-body">
-    <h1>{{profile.username}}</h1>
-    <p class="handle">{{profile.handle}}</p>
-    <p class="bio">{{profile.bio}}</p>
-    <p class="meta">Reviews: {{reviewsCount}}</p>
-  </div>
-</div>
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row">
+      <div class="hero-text">
+        <h1>{{profile.username}}</h1>
+        <p class="sub">Public profile and reviews.</p>
+      </div>
+      <div class="hero-image">
+        <div class="image-placeholder">{{reviewsCount}} review{{#unless (eq reviewsCount 1)}}s{{/unless}} shared with the community.</div>
+      </div>
+    </div>
+  </section>
 
-<h2>Reviews</h2>
-{{#if reviews}}
-  <div class="cards-grid">
-    {{#each reviews}}
-      <div class="review-card card">
-        <div class="card-thumb">
-          {{#if this.restaurant}}
-            <a href="{{this.restaurant.reviews_url}}">
-              <img src="{{this.restaurant.image_src}}" alt="{{this.restaurant.name}}" loading="lazy"
-                   onerror="this.onerror=null;this.src='/img/placeholder.jpg'">
-            </a>
-          {{/if}}
+  <section class="layout page-container">
+    <aside class="profile-sidebar">
+      <h3>Profile</h3>
+      <p>{{profile.handle}}</p>
+      <p>Member since {{formatDate profile.createdAt}}</p>
+      <p>{{#if isOwnProfile}}You can edit or delete your reviews below.{{else}}This is a public profile.{{/if}}</p>
+      <a class="button-link" href="/restaurants">Browse Restaurants</a>
+    </aside>
+
+    <section class="results">
+      <div class="profile-header card profile-view-card">
+        <div class="card-thumb profile-pic">
+          <img src="{{profile.profilePic}}" alt="{{profile.username}}" loading="lazy"
+              onerror="this.onerror=null;this.src='/img/default_profile.png'">
         </div>
         <div class="card-body">
-          {{#if this.restaurant}}
-            <a class="restaurant-link" href="{{this.restaurant.reviews_url}}">{{this.restaurant.name}}</a>
-          {{/if}}
-          <h3>{{this.reviewTitle}}</h3>
-          <p class="rating">Rating: {{this.rating}}/5</p>
-          <p class="msg">{{this.reviewMessage}}</p>
-          <p class="date">{{formatDate this.createdAt}}</p>
+          <h1>{{profile.username}}</h1>
+          <p class="handle">{{profile.handle}}</p>
+          <p class="bio">{{profile.bio}}</p>
+          <p class="meta">Reviews: {{reviewsCount}}</p>
         </div>
       </div>
-    {{/each}}
-  </div>
-{{else}}
-  <p>No reviews yet.</p>
-{{/if}}
+
+      <h2>Reviews</h2>
+      {{#if reviewsCount}}
+        <section class="reviews-section profile-reviews">
+          {{#each reviews}}
+            <article class="review-card">
+              <div class="review-profile">
+                <img class="profile-pic" src="{{this.restaurant.imageSrc}}" alt="{{this.restaurant.name}}"
+                    onerror="this.onerror=null;this.src='/img/default_profile.png';">
+                <div class="review-meta">
+                  <p class="username"><a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a></p>
+                  <p class="date">{{formatDate this.createdAt}}</p>
+                </div>
+              </div>
+
+              <div class="review-message">
+                <h3 class="profile-review-title">{{this.title}}</h3>
+                <p class="rating">Rating: <strong>{{this.rating}}/5</strong></p>
+                <p class="msg">{{this.body}}</p>
+              </div>
+
+              {{#if this.canManage}}
+                <div class="review-manage-box">
+                  <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/edit">
+                    <div class="form-group">
+                      <label for="title-{{this._id}}">Title</label>
+                      <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rating-{{this._id}}">Rating</label>
+                      <select id="rating-{{this._id}}" name="rating" required>
+                        <option value="5" {{#if (eq this.rating 5)}}selected{{/if}}>5</option>
+                        <option value="4" {{#if (eq this.rating 4)}}selected{{/if}}>4</option>
+                        <option value="3" {{#if (eq this.rating 3)}}selected{{/if}}>3</option>
+                        <option value="2" {{#if (eq this.rating 2)}}selected{{/if}}>2</option>
+                        <option value="1" {{#if (eq this.rating 1)}}selected{{/if}}>1</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="body-{{this._id}}">Review</label>
+                      <textarea id="body-{{this._id}}" name="body" rows="3" required>{{this.body}}</textarea>
+                    </div>
+                    <button type="submit" class="login-button">Save Changes</button>
+                  </form>
+                  <form method="POST" action="/reviews/{{this._id}}/delete">
+                    <button type="submit" class="review-delete-button">Delete Review</button>
+                  </form>
+                </div>
+              {{/if}}
+            </article>
+          {{/each}}
+        </section>
+      {{else}}
+        <p class="utility-copy">No reviews yet.</p>
+      {{/if}}
+    </section>
+  </section>
+</main>

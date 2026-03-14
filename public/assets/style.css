@@ -58,6 +58,7 @@ body {
   display: flex;
   gap: 12px;
   margin: 0;
+  align-items: center;
 }
 .nav-links a {
   color: #000;
@@ -70,6 +71,28 @@ body {
 }
 
 .nav-links a:hover {
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+}
+
+.nav-form {
+  margin: 0;
+}
+
+.nav-link-button {
+  background: none;
+  border: none;
+  color: #000;
+  text-decoration: none;
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nav-link-button:hover {
   background: rgba(255,255,255,0.06);
   color: #ffffff;
 }
@@ -486,7 +509,21 @@ body {
   box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e6efe6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: #007a33;
   box-shadow: 0 0 5px rgba(0, 122, 51, 0.2);
@@ -964,3 +1001,87 @@ body {
 }
 .review-dropdown-item:hover { background: #f2f7f2; }
 .review-dropdown-item.delete { color: #d23f35; }
+
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.filter-link-button,
+.button-link {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  background: #007a33;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0;
+  text-decoration: none;
+  text-align: center;
+}
+
+.filter-link-button:hover,
+.button-link:hover {
+  background: #055a2f;
+}
+
+.results-empty {
+  background: #ffffff;
+  border: 1px solid #e9efe9;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.review-helpful span {
+  font-weight: 600;
+  color: #333;
+}
+
+.utility-copy {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.inline-link {
+  color: #007a33;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
+.review-manage-box {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e9efe9;
+}
+
+.review-manage-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.review-delete-button {
+  width: 100%;
+  padding: 12px;
+  background: #b42318;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-delete-button:hover {
+  background: #8d1911;
+}

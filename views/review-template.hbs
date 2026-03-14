@@ -1,75 +1,94 @@
 <main>
-  <!-- Restaurant Header -->
+  <section class="top-hero">
+    <div class="page-container hero-row">
+      <div class="hero-text">
+        <h1>{{restaurant.name}}</h1>
+        <p class="sub">{{restaurant.location}} • {{restaurant.priceRange}} • {{restaurant.reviewCount}} reviews</p>
+      </div>
+      <div class="hero-image">
+        <div class="image-placeholder">Leave a review and help other Lasallians decide where to eat.</div>
+      </div>
+    </div>
+  </section>
+
   <section class="restaurant-header">
     <div class="restaurant-logo">
-      <img src="{{restaurant.image_src}}" alt="{{restaurant.name}}">
+      <img src="{{restaurant.imageSrc}}" alt="{{restaurant.name}}">
     </div>
     <div class="card-body restaurant-details">
       <h3 class="title">{{restaurant.name}}</h3>
       <p class="meta">
         {{restaurant.location}} <br>
-        {{restaurant.price_range}} • ★ {{restaurant.rating}}
+        {{restaurant.priceRange}} • ★ {{restaurant.rating}}
       </p>
       <div class="cuisine-list">
-        {{#each restaurant.cuisine_type}}
-        <span class="cuisine-btn">{{this}}</span>
+        {{#each restaurant.cuisineTypes}}
+          <span class="cuisine-btn">{{this}}</span>
         {{/each}}
       </div>
-      <p class="excerpt">{{restaurant.preview_description}}</p>
+      <p class="excerpt">{{restaurant.previewDescription}}</p>
     </div>
   </section>
 
-  <!-- Add Review Button -->
-  <div class="add-review-container">
-    <button class="add-review-btn">+ Add a Review</button>
-  </div>
-
-  <!-- Reviews Layout -->
-  {{#if hasReviews}}
-  <div class="reviews-layout">
-    <!-- Filter Container -->
-    <aside class="review-filter">
-      <h3>Filter Reviews</h3>
-      <button class="filter-btn">Recent</button>
-      <button class="filter-btn">Most Helpful</button>
-      <button class="filter-btn">Least Helpful</button>
-    </aside>
-
-    <!-- Reviews Section -->
-    <section class="reviews-section">
-      <h2>Reviews</h2>
-      {{#each reviews}}
-      <article class="review-card">
-        <!-- Profile -->
-        <div class="review-profile">
-          <img class="profile-pic" src="{{this.profilePic}}" alt="{{this.user}}'s profile picture">
-          <div class="review-meta">
-            <h3 class="username">{{this.user}}</h3>
-            <p class="date">{{formatDate this.createdAt}}</p>
-          </div>
+  {{#if currentUser}}
+    <section class="login-container">
+      <h1>Add a Review</h1>
+      <form method="POST" action="/reviews">
+        <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
+        <div class="form-group">
+          <label for="reviewTitle">Title</label>
+          <input id="reviewTitle" name="title" type="text" required />
         </div>
-
-        <!-- Review Message -->
-        <div class="review-message">
-          <h4>{{this.reviewTitle}}</h4>
-          <p class="rating">Rating: {{this.rating}}/5</p>
-          <p class="msg">{{this.reviewMessage}}</p>
+        <div class="form-group">
+          <label for="reviewRating">Rating</label>
+          <select id="reviewRating" name="rating" required>
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
         </div>
-
-        <!-- Helpful Count -->
-        <div class="review-helpful">
-          <button class="helpful-btn">Helpful</button>
-          <button class="unhelpful-btn">Unhelpful</button>
-          <p>👍: {{this.howHelpfulCount}}</p>
+        <div class="form-group">
+          <label for="reviewBody">Review</label>
+          <textarea id="reviewBody" name="body" rows="4" required></textarea>
         </div>
-      </article>
-      {{/each}}
+        <button type="submit" class="register-button">Post Review</button>
+      </form>
     </section>
-  </div>
   {{else}}
-    <section class="no-reviews-section">
-      <h2>Reviews</h2>
-      <p class="no-reviews">No Reviews Found</p>
-    </section>
+    <div class="add-review-container">
+      <a class="add-review-btn" href="/login">Login to add a review</a>
+    </div>
   {{/if}}
+
+  <section class="reviews-section page-container">
+    <h2>Reviews</h2>
+    {{#if hasReviews}}
+      {{#each reviews}}
+        <article class="review-card">
+          <div class="review-profile">
+            <img class="profile-pic" src="{{this.author.profilePic}}" alt="{{this.author.username}} profile picture"
+              onerror="this.onerror=null;this.src='/img/default_profile.png';">
+            <div class="review-meta">
+              <p class="username"><a class="inline-link" href="{{this.authorProfilePath}}">{{this.author.username}}</a></p>
+              <p class="date">{{formatDate this.createdAt}}</p>
+            </div>
+          </div>
+
+          <div class="review-message">
+            <h4>{{this.title}}</h4>
+            <p class="rating">Rating: {{this.rating}}/5</p>
+            <p class="msg">{{this.body}}</p>
+          </div>
+
+          <div class="review-helpful">
+            <span>Helpful votes: {{this.helpfulCount}}</span>
+          </div>
+        </article>
+      {{/each}}
+    {{else}}
+      <p class="utility-copy">No reviews yet. Be the first to leave one.</p>
+    {{/if}}
+  </section>
 </main>

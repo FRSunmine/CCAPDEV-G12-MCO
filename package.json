@@ -1,6 +1,17 @@
 {
+  "name": "animo-eats",
+  "version": "1.0.0",
+  "description": "Animo Eats school project scaffolded with Express MVC, Handlebars, and MongoDB.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seeds/seed.js"
+  },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^5.2.1",
-    "express-handlebars": "^8.0.3"
+    "express-handlebars": "^8.0.3",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.0.0"
   }
 }

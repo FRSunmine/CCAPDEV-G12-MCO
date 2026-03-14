@@ -1,0 +1,78 @@
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row">
+      <div class="hero-text">
+        <h1>Discover restaurants near DLSU!</h1>
+        <p class="sub">Reviews and simple guides to local dining spots.</p>
+
+        <form class="search-form" role="search" method="GET" action="/restaurants">
+          <input type="search" id="search-input" name="q" value="{{filters.q}}" placeholder="Search by name or location" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="hero-image">
+        <div class="image-placeholder">Filter by cuisine or price to narrow down your options.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="layout container">
+    <aside class="filters">
+      <h3>Filters</h3>
+      <form method="GET" action="/restaurants">
+        <input type="hidden" name="q" value="{{filters.q}}">
+        <legend>Category</legend>
+        <select name="cuisine" id="cuisine-filter">
+          <option value="">All</option>
+          {{#each cuisines}}
+            <option value="{{this}}" {{#if (eq ../filters.cuisine this)}}selected{{/if}}>{{this}}</option>
+          {{/each}}
+        </select><br>
+
+        <fieldset class="price-filter">
+          <legend>Price</legend>
+          <label><input type="checkbox" name="price" value="₱" {{#if (includes filters.prices "₱")}}checked{{/if}}><span>₱</span></label>
+          <label><input type="checkbox" name="price" value="₱₱" {{#if (includes filters.prices "₱₱")}}checked{{/if}}><span>₱₱</span></label>
+          <label><input type="checkbox" name="price" value="₱₱₱" {{#if (includes filters.prices "₱₱₱")}}checked{{/if}}><span>₱₱₱</span></label>
+        </fieldset>
+
+        <div class="filter-actions">
+          <button type="submit" id="clear-filters">Apply Filters</button>
+          <a class="filter-link-button" href="/restaurants">Reset</a>
+        </div>
+      </form>
+    </aside>
+
+    <section class="results">
+      <h2>Restaurant Results</h2>
+      {{#if hasResults}}
+        <div class="cards-grid">
+          {{#each restaurants}}
+            <article class="card">
+              <div class="card-thumb">
+                <img src="{{this.imageSrc}}" alt="{{this.name}}">
+              </div>
+              <div class="card-body">
+                <h3 class="title">
+                  <a href="{{this.restaurantPath}}">{{this.name}}</a>
+                </h3>
+                <p class="meta">{{this.location}} <br>{{this.priceRange}} • {{this.rating}}</p>
+                <div class="cuisine-list">
+                  {{#each this.cuisineTypes}}
+                    <span class="cuisine-btn">{{this}}</span>
+                  {{/each}}
+                </div>
+                <p class="excerpt">{{this.previewDescription}}</p>
+              </div>
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="results-empty">
+          <p>No restaurants matched your search yet. Try clearing the filters and searching again.</p>
+        </div>
+      {{/if}}
+    </section>
+  </section>
+</main>
