@@ -73,7 +73,7 @@ app.get("/pages/restaurants/:id", (req, res) => {
     const user = users.find(u => u.username === r.user);
     return {
       ...r,
-      profilePic: user ? resolveProfilePic(user.profilePic) : "/img/profiles/default.png"
+      profilePic: user ? resolveProfilePic(user.profilePic) : "/img/default_profile.png"
     };
   });
 
@@ -85,6 +85,7 @@ app.get("/pages/restaurants/:id", (req, res) => {
   });
 });
 
+// ADDED PROFILE ROUTE 
 app.get("/pages/profile/:username", (req, res) => {
   const username = req.params.username;
   const user = users.find(u => u.username === username);
