@@ -1,0 +1,41 @@
+<div class="profile-header card profile-view-card">
+  <div class="card-thumb profile-pic">
+    <img src="{{profile.profilePic}}" alt="{{profile.username}}" loading="lazy"
+         onerror="this.onerror=null;this.src='/img/default_profile.png'">
+  </div>
+  <div class="card-body">
+    <h1>{{profile.username}}</h1>
+    <p class="handle">{{profile.handle}}</p>
+    <p class="bio">{{profile.bio}}</p>
+    <p class="meta">Reviews: {{reviewsCount}}</p>
+  </div>
+</div>
+
+<h2>Reviews</h2>
+{{#if reviews}}
+  <div class="cards-grid">
+    {{#each reviews}}
+      <div class="review-card card">
+        <div class="card-thumb">
+          {{#if this.restaurant}}
+            <a href="{{this.restaurant.reviews_url}}">
+              <img src="{{this.restaurant.image_src}}" alt="{{this.restaurant.name}}" loading="lazy"
+                   onerror="this.onerror=null;this.src='/img/placeholder.jpg'">
+            </a>
+          {{/if}}
+        </div>
+        <div class="card-body">
+          {{#if this.restaurant}}
+            <a class="restaurant-link" href="{{this.restaurant.reviews_url}}">{{this.restaurant.name}}</a>
+          {{/if}}
+          <h3>{{this.reviewTitle}}</h3>
+          <p class="rating">Rating: {{this.rating}}/5</p>
+          <p class="msg">{{this.reviewMessage}}</p>
+          <p class="date">{{formatDate this.createdAt}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p>No reviews yet.</p>
+{{/if}}
