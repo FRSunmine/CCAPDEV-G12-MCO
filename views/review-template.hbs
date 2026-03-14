@@ -1,17 +1,14 @@
-<main>
+<main class="restaurant-page">
   <section class="top-hero">
-    <div class="page-container hero-row">
+    <div class="page-container hero-row hero-row-single">
       <div class="hero-text">
         <h1>{{restaurant.name}}</h1>
         <p class="sub">{{restaurant.location}} • {{restaurant.priceRange}} • {{restaurant.reviewCount}} reviews</p>
       </div>
-      <div class="hero-image">
-        <div class="image-placeholder">Leave a review and help other Lasallians decide where to eat.</div>
-      </div>
     </div>
   </section>
 
-  <section class="restaurant-header">
+  <section class="restaurant-header page-container">
     <div class="restaurant-logo">
       <img src="{{restaurant.imageSrc}}" alt="{{restaurant.name}}">
     </div>
@@ -30,65 +27,79 @@
     </div>
   </section>
 
-  {{#if currentUser}}
-    <section class="login-container">
-      <h1>Add a Review</h1>
-      <form method="POST" action="/reviews">
-        <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
-        <div class="form-group">
-          <label for="reviewTitle">Title</label>
-          <input id="reviewTitle" name="title" type="text" required />
-        </div>
-        <div class="form-group">
-          <label for="reviewRating">Rating</label>
-          <select id="reviewRating" name="rating" required>
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="reviewBody">Review</label>
-          <textarea id="reviewBody" name="body" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="register-button">Post Review</button>
-      </form>
-    </section>
-  {{else}}
-    <div class="add-review-container">
-      <a class="add-review-btn" href="/login">Login to add a review</a>
-    </div>
-  {{/if}}
-
-  <section class="reviews-section page-container">
-    <h2>Reviews</h2>
-    {{#if hasReviews}}
-      {{#each reviews}}
-        <article class="review-card">
-          <div class="review-profile">
-            <img class="profile-pic" src="{{this.author.profilePic}}" alt="{{this.author.username}} profile picture"
-              onerror="this.onerror=null;this.src='/img/default_profile.png';">
-            <div class="review-meta">
-              <p class="username"><a class="inline-link" href="{{this.authorProfilePath}}">{{this.author.username}}</a></p>
-              <p class="date">{{formatDate this.createdAt}}</p>
+  <section class="restaurant-review-layout page-container">
+    <aside class="review-form-panel">
+      {{#if currentUser}}
+        <section class="login-container review-form-card">
+          <h1>Add a Review</h1>
+          <form method="POST" action="/reviews">
+            <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
+            <div class="form-group">
+              <label for="reviewTitle">Title</label>
+              <input id="reviewTitle" name="title" type="text" required />
             </div>
-          </div>
+            <div class="form-group">
+              <label for="reviewRating">Rating</label>
+              <select id="reviewRating" name="rating" required>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reviewBody">Review</label>
+              <textarea id="reviewBody" name="body" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="register-button">Post Review</button>
+          </form>
+        </section>
+      {{else}}
+        <section class="review-form-card guest-review-card">
+          <h2>Add a Review</h2>
+          <p class="utility-copy">Login first to post your own review and vote on other comments.</p>
+          <a class="button-link" href="/login">Login to Review</a>
+        </section>
+      {{/if}}
+    </aside>
 
-          <div class="review-message">
-            <h4>{{this.title}}</h4>
-            <p class="rating">Rating: {{this.rating}}/5</p>
-            <p class="msg">{{this.body}}</p>
-          </div>
+    <section class="review-feed">
+      <h2>Reviews</h2>
+      {{#if hasReviews}}
+        {{#each reviews}}
+          <article class="review-card">
+            <div class="review-profile">
+              <img class="profile-pic" src="{{this.author.profilePic}}" alt="{{this.author.username}} profile picture"
+                onerror="this.onerror=null;this.src='/img/default_profile.png';">
+              <div class="review-meta">
+                <p class="username"><a class="inline-link" href="{{this.authorProfilePath}}">{{this.author.username}}</a></p>
+                <p class="date">{{formatDate this.createdAt}}</p>
+              </div>
+            </div>
 
-          <div class="review-helpful">
-            <span>Helpful votes: {{this.helpfulCount}}</span>
-          </div>
-        </article>
-      {{/each}}
-    {{else}}
-      <p class="utility-copy">No reviews yet. Be the first to leave one.</p>
-    {{/if}}
+            <div class="review-message">
+              <h4>{{this.title}}</h4>
+              <p class="rating">Rating: {{this.rating}}/5</p>
+              <p class="msg">{{this.body}}</p>
+            </div>
+
+            <div class="review-helpful">
+              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                <input type="hidden" name="direction" value="up">
+                <button type="submit" class="helpful-btn">Helpful</button>
+              </form>
+              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                <input type="hidden" name="direction" value="down">
+                <button type="submit" class="unhelpful-btn">Not Helpful</button>
+              </form>
+              <span>Helpful votes: {{this.helpfulCount}}</span>
+            </div>
+          </article>
+        {{/each}}
+      {{else}}
+        <p class="utility-copy">No reviews yet. Be the first to leave one.</p>
+      {{/if}}
+    </section>
   </section>
 </main>

@@ -11,7 +11,20 @@ Animo Eats is a school project web app built with Node.js, Express, MongoDB, Mon
 npm install
 ```
 
-3. Make sure MongoDB is running locally.
+3. Make sure MongoDB is running locally before starting the app.
+
+Example commands on Linux:
+
+```bash
+sudo systemctl start mongod
+sudo systemctl status mongod
+```
+
+You can also test the shell directly:
+
+```bash
+mongosh
+```
 4. Optionally set a custom connection string:
 
 ```bash
@@ -55,3 +68,4 @@ http://localhost:3000
 
 - Static assets such as CSS and images stay in `public/`.
 - Old prototype files inside `public/pages/` are no longer used by the main app routes.
+- If you see `ECONNREFUSED 127.0.0.1:27017`, MongoDB is not running or the URI is incorrect.

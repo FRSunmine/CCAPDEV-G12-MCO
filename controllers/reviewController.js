@@ -104,3 +104,23 @@ exports.remove = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.vote = async (req, res, next) => {
+  try {
+    const review = await Review.findById(req.params.reviewId).populate("restaurant");
+
+    if (!review) {
+      return res.status(404).render("404", { title: "Review Not Found" });
+    }
+
+    const direction = req.body.direction === "down" ? -1 : 1;
+    review.helpfulCount = Math.max(0, review.helpfulCount + direction);
+    review.updatedAt = new Date();
+
+    await review.save();
+
+    return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+  } catch (error) {
+    return next(error);
+  }
+};

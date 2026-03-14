@@ -1,0 +1,58 @@
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row hero-row-single">
+      <div class="hero-text">
+        <h1>Edit Profile</h1>
+        <p class="sub">Update your public information and how it appears in the community.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-edit-shell page-container">
+    <div class="profile-edit-container">
+      <form method="POST" action="/edit-profile">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input id="firstName" name="firstName" type="text" value="{{formData.firstName}}" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" type="text" value="{{formData.lastName}}" required>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" value="{{formData.username}}" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" value="{{formData.email}}" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profilePic">Profile Picture Path</label>
+          <input id="profilePic" name="profilePic" type="text" value="{{formData.profilePic}}" placeholder="/img/default_profile.png">
+          <p class="form-note">Use a local `/img/...` path or leave it blank to keep the default.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="5">{{formData.bio}}</textarea>
+        </div>
+
+        {{#if error}}
+          <div class="error-message">{{error}}</div>
+        {{/if}}
+
+        <div class="profile-edit-actions">
+          <button type="submit" class="register-button">Save Profile</button>
+          <a class="button-link secondary-button" href="/profile/{{currentUser.username}}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>

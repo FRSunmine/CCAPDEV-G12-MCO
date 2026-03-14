@@ -13,8 +13,6 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-connectDB();
-
 const hbs = exphbs.create({
   extname: "hbs",
   defaultLayout: "main",
@@ -66,9 +64,23 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).render("500", { title: "Server Error" });
+
+  if (err.name === "MongoServerSelectionError") {
+    return res.status(503).render("503", {
+      title: "Database Unavailable",
+      errorMessage: "MongoDB is not reachable right now. Start MongoDB and reload the page.",
+    });
+  }
+
+  return res.status(500).render("500", { title: "Server Error" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+async function startServer() {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+startServer();

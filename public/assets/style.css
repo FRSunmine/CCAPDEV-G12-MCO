@@ -105,6 +105,14 @@ body {
   gap: 20px;
   align-items: center;
 }
+
+.hero-row-single {
+  grid-template-columns: 1fr;
+}
+
+.hero-row-single .hero-text {
+  max-width: 760px;
+}
 .hero-text h1 {
   margin: 0 0 8px;
   font-size: 32px;
@@ -269,6 +277,13 @@ body {
   height: 200px;
   overflow: hidden;
 }
+
+.profile-view-card {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
 .card:not(.profile-view-card):hover{
   background: #d9f7e8;
 }
@@ -454,6 +469,8 @@ body {
 @media (max-width: 900px) {
   .hero-row { grid-template-columns: 1fr; }
   .layout { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .profile-edit-actions { flex-direction: column; }
 }
 
 /* Stack header on small screens so items fit */
@@ -674,11 +691,21 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 6px;
+  overflow: visible;
 }
 
 .profile-view-card .meta {
   font-size: 14px;
   color: #6b7a78;
+}
+
+.profile-view-card .bio {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: #495256;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
 }
 
 .profile-view-card .excerpt {
@@ -699,6 +726,10 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 200px;
+}
+
+.sidebar-button {
+  margin-bottom: 10px;
 }
 
 /* profile page reviews */
@@ -1084,4 +1115,147 @@ body {
 
 .review-delete-button:hover {
   background: #8d1911;
+}
+
+.profile-edit-shell {
+  padding-bottom: 48px;
+}
+
+.profile-edit-container {
+  max-width: 760px;
+  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #e9efe9;
+  border-radius: 12px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-note {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.profile-edit-actions .register-button,
+.profile-edit-actions .secondary-button {
+  margin-top: 0;
+  width: auto;
+  min-width: 180px;
+}
+
+.secondary-button {
+  background: #eef6ee;
+  color: #055a2f;
+}
+
+.secondary-button:hover {
+  background: #d9f7e8;
+}
+
+/* Restaurant detail page */
+.restaurant-page .restaurant-header {
+  margin: 0 auto 24px;
+  max-width: 1100px;
+  padding: 20px 28px;
+}
+
+.restaurant-review-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding-bottom: 48px;
+}
+
+.review-form-panel {
+  position: sticky;
+  top: 100px;
+  align-self: start;
+}
+
+.review-form-card {
+  background: #ffffff;
+  border: 1px solid #e9efe9;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.review-form-card.login-container {
+  max-width: none;
+  margin: 0;
+}
+
+.review-form-card h1,
+.review-form-card h2 {
+  margin: 0 0 20px;
+  text-align: left;
+}
+
+.guest-review-card p {
+  margin: 0 0 18px;
+}
+
+.review-feed {
+  min-width: 0;
+}
+
+.review-feed h2 {
+  margin: 0 0 16px;
+  color: #055a2f;
+}
+
+.review-feed .review-card {
+  margin-bottom: 20px;
+}
+
+.review-feed .review-message .msg {
+  line-height: 1.5;
+}
+
+.vote-form {
+  margin: 0;
+}
+
+.review-helpful {
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.review-helpful span {
+  margin-left: auto;
+}
+
+.helpful-btn,
+.unhelpful-btn {
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .restaurant-page .restaurant-header {
+    padding: 20px;
+  }
+
+  .restaurant-review-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .review-form-panel {
+    position: static;
+  }
+
+  .review-helpful span {
+    margin-left: 0;
+    width: 100%;
+  }
 }

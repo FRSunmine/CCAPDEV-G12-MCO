@@ -57,3 +57,18 @@ exports.getProfilePage = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getEditProfilePage = (req, res) => {
+  return res.render("edit-profile", {
+    title: "Edit Profile",
+    formData: {
+      firstName: req.currentUser.firstName || "",
+      lastName: req.currentUser.lastName || "",
+      username: req.currentUser.username || "",
+      email: req.currentUser.email || "",
+      bio: req.currentUser.bio || "",
+      profilePic: req.currentUser.profilePic || "",
+    },
+    error: req.query.error || null,
+  });
+};

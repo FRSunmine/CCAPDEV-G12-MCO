@@ -1,12 +1,9 @@
 <main>
   <section class="top-hero">
-    <div class="page-container hero-row">
+    <div class="page-container hero-row hero-row-single">
       <div class="hero-text">
         <h1>{{profile.username}}</h1>
         <p class="sub">Public profile and reviews.</p>
-      </div>
-      <div class="hero-image">
-        <div class="image-placeholder">{{reviewsCount}} review{{#unless (eq reviewsCount 1)}}s{{/unless}} shared with the community.</div>
       </div>
     </div>
   </section>
@@ -16,7 +13,11 @@
       <h3>Profile</h3>
       <p>{{profile.handle}}</p>
       <p>Member since {{formatDate profile.createdAt}}</p>
+      <p>{{reviewsCount}} review{{#unless (eq reviewsCount 1)}}s{{/unless}} shared with the community.</p>
       <p>{{#if isOwnProfile}}You can edit or delete your reviews below.{{else}}This is a public profile.{{/if}}</p>
+      {{#if isOwnProfile}}
+        <a class="button-link sidebar-button" href="/edit-profile">Edit Profile</a>
+      {{/if}}
       <a class="button-link" href="/restaurants">Browse Restaurants</a>
     </aside>
 
