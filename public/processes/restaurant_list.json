@@ -8,7 +8,7 @@
     "rating": 4.6,
     "price_range": "₱",
     "preview_description": "Boneless Happiness!",
-    "image_src": "https://scontent.fmnl17-1.fna.fbcdn.net/v/t39.30808-6/494350568_1142014497957590_4585097158041977675_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=yxz2RS87JXkQ7kNvwFFD9Kk&_nc_oc=AdmbC3-hReJPDGb76hc0cmVqyDsepKWQt1XdsXwIxfLn1178HhzZX3FP6dFeNbKWQAk&_nc_zt=23&_nc_ht=scontent.fmnl17-1.fna&_nc_gid=qIWt7zLAN3hyYwzSrE6dWA&oh=00_AftQct7m9-v_u_1ypCI7y2IpRZAqI_mPq9_S_kVwhbc_eQ&oe=69920800",
+    "image_src": "/img/restaurants/24chicken-logo.jpg",
     "coordinates": { "lat": 14.565900396150434, "lng": 120.99283646093451 }
   },
   {
@@ -20,7 +20,7 @@
     "rating": 4.7,
     "price_range": "₱₱",
     "preview_description": "Quality Food & Specialty Coffee!",
-    "image_src": "https://scontent.fmnl17-5.fna.fbcdn.net/v/t39.30808-6/364678548_7199633053384688_502780354687599346_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=mKQ_jxQUKEIQ7kNvwGGuQ7x&_nc_oc=Adn4iEzFrmFfmPxCD5nibU5YuKSXUdCPbVTt8olkf7aISFxrunzSfDGRnfTnwLSv-i8&_nc_zt=23&_nc_ht=scontent.fmnl17-5.fna&_nc_gid=hvllzGWMBzI58G2RMCoKBA&oh=00_AftqPFKmuQANpTCoLu8Tjox3zC8iAV0XYbxY0KdlcyhIkA&oe=699242D6",
+    "image_src": "/img/restaurants/prelude-logo.jpg",
     "coordinates": { "lat": 14.566252584273098, "lng": 120.99273773595526 }
   },
   {
@@ -32,7 +32,7 @@
     "rating": 4.4,
     "price_range": "₱",
     "preview_description": "Tinuhog ni Benny Barbecue House",
-    "image_src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2yLaVMZMag1yFmeJ82I6fYONPU-wtQPwqKQ&s",
+    "image_src": "/img/restaurants/tinuhog-logo.png",
     "coordinates": { "lat": 14.566012127987763, "lng": 120.99422356024654 }
   },
   {
@@ -44,7 +44,7 @@
     "rating": 4.2,
     "price_range": "₱₱",
     "preview_description": "ROYALTEA皇茶 is a premium cheese tea concept from China that has pioneered the cheese cap trend.",
-    "image_src": "https://scontent.fmnl17-2.fna.fbcdn.net/v/t39.30808-6/340773615_533023148986515_6157755375331447305_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=WG9RUtSKZZUQ7kNvwGu4wDQ&_nc_oc=AdneaSs7v1EfDXMicYE0Kp_zVkKAhed2Y52P9AeFCkCfpWsaPInkgTTE1DgjEucWIVo&_nc_zt=23&_nc_ht=scontent.fmnl17-2.fna&_nc_gid=m8E3sBT970G1lldjj4qxBA&oh=00_AfucU3yqbKz46c9iJzG6V_cQk7oTrOP3-JFjuCgjLfV01w&oe=6992350E",
+    "image_src": "/img/restaurants/royaltea-logo.jpg",
     "coordinates": { "lat": 14.565929705005827, "lng": 120.99350137547356 }
   },
     {
@@ -56,7 +56,7 @@
     "rating": 4.6,
     "price_range": "₱₱",
     "preview_description": "IT'S FRESH. IT'S HUGE. IT'S GREAT",
-    "image_src": "https://scontent.fmnl17-2.fna.fbcdn.net/v/t39.30808-6/352515154_289472700183948_4392754400898399553_n.png?_nc_cat=1&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=691UrIybHZMQ7kNvwEkmIYX&_nc_oc=AdnexrQzCnTRvKBOG7nj4bqP7BB_I3jinj7c3BwXhkiu_RDStnwRHUvAgIyo68FAFcg&_nc_zt=23&_nc_ht=scontent.fmnl17-2.fna&_nc_gid=mVvKJ9jIeX0dragihDjPIA&oh=00_Afv9McE-8YF3kfbK8OBFnBG0JudwN6fQ6DF1Q3VDmP0fjg&oe=69926A72",
+    "image_src": "/img/restaurants/zarks-logo.png",
     "coordinates": { "lat": 14.565208148336865, "lng": 120.99425305585949 }
   },
   {
@@ -68,7 +68,7 @@
     "rating": 1.7,
     "price_range": "₱₱",
     "preview_description": "UNLIMITED FRIED CHICKEN WINGS & SMASH BURGER",
-    "image_src": "https://scontent.fmnl17-4.fna.fbcdn.net/v/t39.30808-6/445381455_122109520676329761_8374017607180644666_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=VU01-326NX8Q7kNvwHW3OTG&_nc_oc=AdlNepffX1g1PzL0tIBQK3mc8c0pentnFryDSzBcKzvMsTd42__jRx6MVB2adhX1zmM&_nc_zt=23&_nc_ht=scontent.fmnl17-4.fna&_nc_gid=fzulpKz9S7mlNmUDiwS_2A&oh=00_Aft2NNP1MCHGNHlxZ04R2p3ETcMDaZPNMxFhN3PQb8n-nQ&oe=69924BA2",
+    "image_src": "/img/restaurants/foodmob-logo.jpg",
     "coordinates": { "lat": 14.565607752987855, "lng": 120.99469418362544}
   },
   {
@@ -80,7 +80,7 @@
     "rating": 4.5,
     "price_range": "₱",
     "preview_description": "Birria Taco Specialist",
-    "image_src": "https://scontent.fmnl17-7.fna.fbcdn.net/v/t39.30808-6/326943842_850376326262023_8928453936466185275_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=TR-GRlyiu-4Q7kNvwF1S85a&_nc_oc=Adm22x6nMFJ6d7eQwGwcoqi24-35SINBdHcEuMIPlD8A3QVDLBZpUQtljJGhiNDd4GE&_nc_zt=23&_nc_ht=scontent.fmnl17-7.fna&_nc_gid=qE1I04-Cw0lP0hzkUHvL0Q&oh=00_Aftk3KZLVCPoNd9EW6_d5--lapFI_Sep_nRpQ0UhrKGdLw&oe=69923F80",
+    "image_src": "/img/restaurants/elpoco-logo.jpg",
     "coordinates": { "lat": 14.565317236792477, "lng": 120.99624046145048 }
   },
   {
@@ -92,7 +92,7 @@
     "rating": 4.9,
     "price_range": "₱₱",
     "preview_description": "Fast food, café, and a marketing beast. We serve food and strategy",
-    "image_src": "https://scontent.fmnl17-2.fna.fbcdn.net/v/t39.30808-6/601813604_869083912542129_6747910565836007190_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=4KEdjmHxp6AQ7kNvwEaO1fi&_nc_oc=AdkJSCR31Z0qC3ktTKV3QgGWI3ZDDRXkavj8r4zrWGv2EBDeuejfrYwZFH8AJGXO8YM&_nc_zt=23&_nc_ht=scontent.fmnl17-2.fna&_nc_gid=mPYSDCItIhZBtrYTRny-DA&oh=00_AfvR_l8kCe-L3VVrB5UPSfhPCbGbNEl4SJBbYX8fGjoKog&oe=699269A4",
+    "image_src": "/img/restaurants/ontheway-logo.jpg",
     "coordinates": { "lat": 14.56323374922891, "lng": 120.99584689944585 }
   }
 ]

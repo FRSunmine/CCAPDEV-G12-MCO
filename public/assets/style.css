@@ -539,7 +539,7 @@ body {
 
 /* Welcome Page */
 #welcome-bg-cover {
-  background-image: url('https://scontent.fmnl17-5.fna.fbcdn.net/v/t39.30808-6/508405627_10162421585754760_2434342301252479443_n.jpg?stp=dst-jpg_s590x590_tt6&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=GVm0LsXDTHkQ7kNvwHMWqhp&_nc_oc=AdkoMHtlgxDcXobxbQsm8J_CnMTodf-kc2fNCn9t1QotZElNbJYKzwH5-QhEPYrdWAA&_nc_zt=23&_nc_ht=scontent.fmnl17-5.fna&_nc_gid=pSMjuxQhq2rWahsiSajIXg&oh=00_Afv_ezegR0q3CerX8Bc_NUBqTkGB4812AvKHxnS8MXmLEg&oe=69920F89');
+  background-image: url('/img/agno.jpg');
   background-size: cover;
   background-position: center;
   height: 750px;
