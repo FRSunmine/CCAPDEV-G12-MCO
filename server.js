@@ -85,6 +85,46 @@ app.get("/pages/restaurants/:id", (req, res) => {
   });
 });
 
+app.get("/pages/profile/:username", (req, res) => {
+  const username = req.params.username;
+  const user = users.find(u => u.username === username);
+  if (!user) return res.status(404).send("User not found");
+
+  const profile = { ...user, profilePic: resolveProfilePic(user.profilePic || "") };
+
+  const dataDir = path.join(__dirname, "public", "data");
+  const files = fs.readdirSync(dataDir);
+  const userReviews = [];
+
+  files.forEach(fname => {
+    const m = fname.match(/^(rest\d+)_reviews\.json$/);
+    if (!m) return;
+    const restaurantId = m[1];
+    const reviews = JSON.parse(fs.readFileSync(path.join(dataDir, fname), "utf8"));
+    reviews.forEach(r => {
+      if (r.user === username || r.userID === user.userID) {
+        const restaurant = restaurantList.find(rt => rt.id === restaurantId);
+        userReviews.push({
+          ...r,
+          restaurant: restaurant ? {
+            id: restaurant.id,
+            name: restaurant.name,
+            image_src: restaurant.image_src,
+            reviews_url: restaurant.reviews_url
+          } : null
+        });
+      }
+    });
+  });
+
+  res.render("profile-template", {
+    layout: "main",
+    profile,
+    reviews: userReviews,
+    reviewsCount: userReviews.length
+  });
+});
+
 // Endpoint for JSON data
 app.get("/restaurants", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "processes", "restaurant_list.json"));
