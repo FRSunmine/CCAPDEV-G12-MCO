@@ -29,12 +29,27 @@ exports.getRestaurantListPage = async (req, res, next) => {
       filter.priceRange = { $in: prices };
     }
 
+    // Query Mongo
     const restaurants = await Restaurant.find(filter).sort({ name: 1 }).lean();
-    const cuisines = (await Restaurant.distinct("cuisineTypes")).sort((left, right) => left.localeCompare(right));
-    const mappedRestaurants = restaurants.map((restaurant) => ({
-      ...restaurant,
-      restaurantPath: `/restaurants/${restaurant.restaurantId}`,
+
+    // Build mappedRestaurants here
+    const mappedRestaurants = restaurants.map(r => ({
+      ...r,
+      restaurantPath: `/restaurants/${r.restaurantId}`,
+      jsonData: JSON.stringify({
+        restaurantId: r.restaurantId,
+        name: r.name,
+        location: r.location,
+        priceRange: r.priceRange,
+        rating: r.rating,
+        previewDescription: r.previewDescription,
+        imageSrc: r.imageSrc,
+        coordinates: r.coordinates
+      })
     }));
+
+    const cuisines = (await Restaurant.distinct("cuisineTypes"))
+      .sort((left, right) => left.localeCompare(right));
 
     return res.render("search", {
       title: "Search Restaurants",
@@ -77,3 +92,7 @@ exports.getRestaurantPage = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+
+

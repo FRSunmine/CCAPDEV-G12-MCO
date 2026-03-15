@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <main>
   <section class="top-hero">
     <div class="page-container hero-row hero-row-single">
@@ -43,25 +46,25 @@
     <section class="results">
       <h2>Restaurant Results</h2>
       {{#if hasResults}}
-        <div class="cards-grid">
+        <div class="cards-grid" id="cards-grid">
           {{#each restaurants}}
-            <article class="card">
-              <div class="card-thumb">
-                <img src="{{this.imageSrc}}" alt="{{this.name}}">
+          <article class="card" data-restaurant='{{jsonData}}'>
+            <div class="card-thumb">
+              <img src="{{imageSrc}}" alt="{{name}}">
+            </div>
+            <div class="card-body">
+              <h3 class="title">
+                <a href="{{restaurantPath}}">{{name}}</a>
+              </h3>
+              <p class="meta">{{location}} <br>{{priceRange}} • {{rating}}</p>
+              <div class="cuisine-list">
+                {{#each cuisineTypes}}
+                  <span class="cuisine-btn">{{this}}</span>
+                {{/each}}
               </div>
-              <div class="card-body">
-                <h3 class="title">
-                  <a href="{{this.restaurantPath}}">{{this.name}}</a>
-                </h3>
-                <p class="meta">{{this.location}} <br>{{this.priceRange}} • {{this.rating}}</p>
-                <div class="cuisine-list">
-                  {{#each this.cuisineTypes}}
-                    <span class="cuisine-btn">{{this}}</span>
-                  {{/each}}
-                </div>
-                <p class="excerpt">{{this.previewDescription}}</p>
-              </div>
-            </article>
+              <p class="excerpt">{{previewDescription}}</p>
+            </div>
+          </article>
           {{/each}}
         </div>
       {{else}}
@@ -72,3 +75,81 @@
     </section>
   </section>
 </main>
+
+<!-- Inset popup markup -->
+<div id="inset-backdrop" class="inset-backdrop"></div>
+<div id="restaurant-inset" class="inset">
+  <button id="inset-close" class="inset-close">&times;</button>
+  <div class="inset-content">
+    <div id="inset-map" class="inset-map"></div>
+    <div class="inset-info"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const grid = document.getElementById("cards-grid");
+    const inset = document.getElementById("restaurant-inset");
+    const insetInfo = inset.querySelector(".inset-info");
+    const insetClose = document.getElementById("inset-close");
+    const backdrop = document.getElementById("inset-backdrop");
+    let currentMap = null;
+
+    grid.addEventListener("click", e => {
+      const card = e.target.closest(".card");
+      if (!card) return;
+      if (e.target.tagName.toLowerCase() === "a") return;
+
+      const restaurant = JSON.parse(card.dataset.restaurant);
+
+      insetInfo.innerHTML = `
+        <h2>${restaurant.name}</h2>
+        <p><strong>Location:</strong> ${restaurant.location}</p>
+        <p><strong>Price Range:</strong> ${restaurant.priceRange}</p>
+        <p><strong>Rating:</strong> ${restaurant.rating}</p>
+        <p>${restaurant.previewDescription}</p><br>
+        <p><strong>Top Review:</strong></p>
+        <div class="top-review">Loading top review...</div>
+      `;
+
+      inset.classList.add("open");
+      backdrop.style.display = "block";
+
+      if (currentMap) { currentMap.remove(); currentMap = null; }
+      currentMap = L.map("inset-map").setView([restaurant.coordinates.lat, restaurant.coordinates.lng], 17);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(currentMap);
+      L.marker([restaurant.coordinates.lat, restaurant.coordinates.lng]).addTo(currentMap);
+      setTimeout(() => currentMap.invalidateSize(), 300);
+
+      fetch(`/data/${restaurant.restaurantId}_reviews.json`)
+        .then(res => res.ok ? res.json() : [])
+        .then(reviews => {
+          const reviewDiv = insetInfo.querySelector(".top-review");
+          if (Array.isArray(reviews) && reviews.length > 0) {
+            const topReview = reviews.reduce((best, current) =>
+              current.rating > (best?.rating || 0) ? current : best, null);
+            const truncated = topReview.reviewMessage.length > 120
+              ? topReview.reviewMessage.slice(0, 120) + "..."
+              : topReview.reviewMessage;
+            reviewDiv.textContent = `"${truncated}" — ${topReview.user}`;
+          } else {
+            reviewDiv.textContent = "No reviews yet.";
+          }
+        })
+        .catch(() => {
+          insetInfo.querySelector(".top-review").textContent = "No reviews yet.";
+        });
+    });
+
+    insetClose.addEventListener("click", () => {
+      inset.classList.remove("open");
+      backdrop.style.display = "none";
+    });
+    backdrop.addEventListener("click", () => {
+      inset.classList.remove("open");
+      backdrop.style.display = "none";
+    });
+  });
+</script>

@@ -17,6 +17,10 @@ const hbs = exphbs.create({
   extname: "hbs",
   defaultLayout: "main",
   helpers: {
+    eq: (a, b) => a === b,
+    includes: (arr, val) => Array.isArray(arr) && arr.includes(val),
+    json: (context) => JSON.stringify(context),
+    
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleString("en-US", {
