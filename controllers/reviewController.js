@@ -135,7 +135,15 @@ exports.update = async (req, res, next) => {
     const body = req.body.body ? req.body.body.trim() : "";
     const rating = Number(req.body.rating);
 
+    // If validation fails, redirect back to the restaurant page
     if (!title || !body || Number.isNaN(rating)) {
+      const failRestaurantId = review.restaurant && review.restaurant.restaurantId
+        ? review.restaurant.restaurantId
+        : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
+
+      if (failRestaurantId) {
+        return res.redirect(`/restaurants/${failRestaurantId}`);
+      }
       return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
     }
 
@@ -146,6 +154,14 @@ exports.update = async (req, res, next) => {
 
     await review.save();
     await refreshRestaurantStats(review.restaurant._id);
+
+    const restaurantId = (review.restaurant && review.restaurant.restaurantId)
+      ? review.restaurant.restaurantId
+      : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
+
+    if (restaurantId) {
+      return res.redirect(`/restaurants/${restaurantId}`);
+    }
 
     return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
   } catch (error) {
@@ -172,6 +188,14 @@ exports.remove = async (req, res, next) => {
 
     await review.deleteOne();
     await refreshRestaurantStats(restaurantDbId);
+
+    const restaurantId = (review.restaurant && review.restaurant.restaurantId)
+      ? review.restaurant.restaurantId
+      : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
+
+    if (restaurantId) {
+      return res.redirect(`/restaurants/${restaurantId}`);
+    }
 
     return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
   } catch (error) {

@@ -158,6 +158,41 @@
               {{/if}}
             </div>
 
+            {{#if this.canManage}}
+              <button type="button" class="manage-toggle" onclick="document.getElementById('manage-{{this._id}}').classList.toggle('open')">
+                Edit / Delete
+              </button>
+
+              <div id="manage-{{this._id}}" class="review-manage-box">
+                <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/edit">
+                  <div class="form-group">
+                    <label for="title-{{this._id}}">Title</label>
+                    <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="rating-{{this._id}}">Rating</label>
+                    <select id="rating-{{this._id}}" name="rating" required>
+                      <option value="5" {{#if (eq this.rating 5)}}selected{{/if}}>5</option>
+                      <option value="4" {{#if (eq this.rating 4)}}selected{{/if}}>4</option>
+                      <option value="3" {{#if (eq this.rating 3)}}selected{{/if}}>3</option>
+                      <option value="2" {{#if (eq this.rating 2)}}selected{{/if}}>2</option>
+                      <option value="1" {{#if (eq this.rating 1)}}selected{{/if}}>1</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="body-{{this._id}}">Review</label>
+                    <textarea id="body-{{this._id}}" name="body" rows="3" required>{{this.body}}</textarea>
+                  </div>
+                  <button type="submit" class="login-button">Save Changes</button>
+                </form>
+
+                <form method="POST" action="/reviews/{{this._id}}/delete">
+                  <button type="submit" class="review-delete-button">Delete Review</button>
+                </form>
+              </div>
+            {{/if}}
+            
+
             {{!-- Single or multiple images --}}
             {{#if this.images}}
               <div class="review-media images">
