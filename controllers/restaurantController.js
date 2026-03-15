@@ -63,6 +63,7 @@ exports.getRestaurantListPage = async (req, res, next) => {
   }
 };
 
+// restaurantController.js — updated getRestaurantPage
 exports.getRestaurantPage = async (req, res, next) => {
   try {
     const restaurant = await Restaurant.findOne({ restaurantId: req.params.restaurantId }).lean();
@@ -76,17 +77,27 @@ exports.getRestaurantPage = async (req, res, next) => {
       .lean();
 
     const currentUserId = req.currentUser ? String(req.currentUser._id) : null;
-    const mappedReviews = reviews.map((review) => ({
-      ...review,
-      canManage: currentUserId === String(review.author._id),
-      authorProfilePath: `/profile/${review.author.username}`,
-    }));
+
+    // Ensure session map exists
+    const votedReviews = req.session.votedReviews || {};
+
+    // Map reviews and attach userVote for template convenience
+    const mappedReviews = reviews.map((review) => {
+      const userVote = votedReviews[String(review._id)] || null; // "up" | "down" | null
+      return {
+        ...review,
+        canManage: currentUserId === String(review.author._id),
+        authorProfilePath: `/profile/${review.author.username}`,
+        userVote
+      };
+    });
+
 
     return res.render("review-template", {
       title: restaurant.name,
       restaurant,
       reviews: mappedReviews,
-      hasReviews: mappedReviews.length > 0,
+      hasReviews: mappedReviews.length > 0
     });
   } catch (error) {
     return next(error);
