@@ -188,21 +188,21 @@
                 <input type="hidden" name="direction" value="up">
                 <button
                   type="submit"
-                  class="helpful-btn {{#if this.isHelpfulVoted}}voted-up{{/if}} {{#if this.isNotHelpfulVoted}}muted{{/if}}"
+                  class="helpful-btn {{#if this.isUpvoted}}voted-up{{/if}} {{#if this.isDownvoted}}muted{{/if}}"
                 >
-                  Helpful
+                  Upvote
                 </button>
               </form>
               <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
                 <input type="hidden" name="direction" value="down">
                 <button
                   type="submit"
-                  class="unhelpful-btn {{#if this.isNotHelpfulVoted}}voted-down{{/if}} {{#if this.isHelpfulVoted}}muted{{/if}}"
+                  class="unhelpful-btn {{#if this.isDownvoted}}voted-down{{/if}} {{#if this.isUpvoted}}muted{{/if}}"
                 >
-                  Not Helpful
+                  Downvote
                 </button>
               </form>
-              <span>Helpful votes: {{this.helpfulCount}}</span>
+              <span>Score: {{this.voteScore}}</span>
             </div>
 
             {{#if ../isOwnerForRestaurant}}

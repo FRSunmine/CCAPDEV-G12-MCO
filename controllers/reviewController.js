@@ -198,7 +198,7 @@ exports.vote = async (req, res, next) => {
       (vote) => String(vote.user) === userId
     );
 
-    let helpfulDelta = 0;
+    let scoreDelta = 0;
 
     if (existingVoteIndex >= 0) {
       const previousDirection = updatedVotes[existingVoteIndex].direction;
@@ -206,16 +206,14 @@ exports.vote = async (req, res, next) => {
       if (previousDirection === direction) {
         updatedVotes.splice(existingVoteIndex, 1);
 
-        if (direction === "up") {
-          helpfulDelta = -1;
-        }
+        scoreDelta = direction === "up" ? -1 : 1;
       } else {
         updatedVotes[existingVoteIndex].direction = direction;
 
         if (previousDirection === "up" && direction === "down") {
-          helpfulDelta = -1;
+          scoreDelta = -2;
         } else if (previousDirection === "down" && direction === "up") {
-          helpfulDelta = 1;
+          scoreDelta = 2;
         }
       }
     } else {
@@ -224,12 +222,10 @@ exports.vote = async (req, res, next) => {
         direction,
       });
 
-      if (direction === "up") {
-        helpfulDelta = 1;
-      }
+      scoreDelta = direction === "up" ? 1 : -1;
     }
 
-    const updatedHelpfulCount = Math.max(0, (review.helpfulCount || 0) + helpfulDelta);
+    const updatedHelpfulCount = (review.helpfulCount || 0) + scoreDelta;
     const updatedAt = new Date();
 
     await Review.findByIdAndUpdate(reviewId, {

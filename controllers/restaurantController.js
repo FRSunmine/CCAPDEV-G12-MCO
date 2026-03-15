@@ -94,8 +94,9 @@ exports.getRestaurantPage = async (req, res, next) => {
         : null,
     })).map((review) => ({
       ...review,
-      isHelpfulVoted: review.userVote === "up",
-      isNotHelpfulVoted: review.userVote === "down",
+      voteScore: review.helpfulCount || 0,
+      isUpvoted: review.userVote === "up",
+      isDownvoted: review.userVote === "down",
     }));
 
     return res.render("review-template", {
