@@ -56,6 +56,9 @@ app.use(
 );
 app.use(loadCurrentUser);
 app.use(express.static(path.join(__dirname, "public"), { index: false }));
+app.get("/pages/contact", (req, res) => {
+  res.render("contact", { layout: "main", title: "Contact" });
+});
 
 app.use("/", pageRoutes);
 app.use("/auth", authRoutes);
