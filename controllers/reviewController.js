@@ -1,5 +1,6 @@
 const Restaurant = require("../models/Restaurant");
 const Review = require("../models/Review");
+const mongoose = require("mongoose");
 
 async function refreshRestaurantStats(restaurantDbId) {
   const [stats] = await Review.aggregate([
@@ -105,22 +106,53 @@ exports.remove = async (req, res, next) => {
   }
 };
 
+
 exports.vote = async (req, res, next) => {
   try {
-    const review = await Review.findById(req.params.reviewId).populate("restaurant");
+    const userId = req.session.userId;
+    if (!userId) return res.redirect("/login");
 
-    if (!review) {
-      return res.status(404).render("404", { title: "Review Not Found" });
+    const reviewId = req.params.reviewId;
+    const direction = req.body.direction === "down" ? "down" : "up";
+
+    req.session.votedReviews = req.session.votedReviews || {};
+    const prev = req.session.votedReviews[reviewId];
+
+    if (prev === direction) {
+      const review = await Review.findById(reviewId).select("restaurant").populate("restaurant");
+      if (!review) return res.status(404).render("404", { title: "Review Not Found" });
+      return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
     }
 
-    const direction = req.body.direction === "down" ? -1 : 1;
-    review.helpfulCount = Math.max(0, review.helpfulCount + direction);
-    review.updatedAt = new Date();
+    let inc = 0;
+    if (!prev) {
+      inc = direction === "up" ? 1 : -1;
+    } else if (prev === "down" && direction === "up") {
+      inc = 2;
+    } else if (prev === "up" && direction === "down") {
+      inc = -2;
+    }
+    if (inc !== 0) {
+      const pipeline = [
+        {
+          $set: {
+            helpfulCount: {
+              $max: [
+                0,
+                { $add: ["$helpfulCount", inc] }
+              ]
+            }
+          }
+        }
+      ];
+      await Review.findOneAndUpdate({ _id: reviewId }, pipeline);
+    }
+    req.session.votedReviews[reviewId] = direction;
 
-    await review.save();
-
+    const review = await Review.findById(reviewId).select("restaurant").populate("restaurant");
+    if (!review) return res.status(404).render("404", { title: "Review Not Found" });
     return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
   } catch (error) {
     return next(error);
   }
-};
+}

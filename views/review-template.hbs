@@ -68,7 +68,7 @@
       <h2>Reviews</h2>
       {{#if hasReviews}}
         {{#each reviews}}
-          <article class="review-card">
+          <article class="review-card" data-review-id="{{this._id}}">
             <div class="review-profile">
               <img class="profile-pic" src="{{this.author.profilePic}}" alt="{{this.author.username}} profile picture"
                 onerror="this.onerror=null;this.src='/img/default_profile.png';">
@@ -85,16 +85,30 @@
             </div>
 
             <div class="review-helpful">
-              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
-                <input type="hidden" name="direction" value="up">
-                <button type="submit" class="helpful-btn">Helpful</button>
-              </form>
-              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
-                <input type="hidden" name="direction" value="down">
-                <button type="submit" class="unhelpful-btn">Not Helpful</button>
-              </form>
-              <span>Helpful votes: {{this.helpfulCount}}</span>
-            </div>
+            <!-- Helpful (up) -->
+            <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote" style="display:inline">
+              <input type="hidden" name="direction" value="up">
+              <button type="submit"
+                class="helpful-btn
+                      {{#if (eq this.userVote "up")}}voted-up{{/if}}
+                      {{#if (eq this.userVote "down")}}muted{{/if}}">
+                Helpful 👍
+              </button>
+            </form>
+
+            <!-- Not Helpful (down) -->
+            <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote" style="display:inline">
+              <input type="hidden" name="direction" value="down">
+              <button type="submit"
+                class="unhelpful-btn
+                      {{#if (eq this.userVote "down")}}voted-down{{/if}}
+                      {{#if (eq this.userVote "up")}}muted{{/if}}">
+                Not Helpful 👎
+              </button>
+            </form>
+
+            <span>Helpful votes: <span class="helpful-count">{{this.helpfulCount}}</span></span>
+          </div>
           </article>
         {{/each}}
       {{else}}
@@ -103,3 +117,5 @@
     </section>
   </section>
 </main>
+
+

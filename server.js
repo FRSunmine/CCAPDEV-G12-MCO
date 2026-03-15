@@ -20,7 +20,7 @@ const hbs = exphbs.create({
     eq: (a, b) => a === b,
     includes: (arr, val) => Array.isArray(arr) && arr.includes(val),
     json: (context) => JSON.stringify(context),
-    
+
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleString("en-US", {
@@ -80,6 +80,12 @@ app.use((err, req, res, next) => {
   }
 
   return res.status(500).render("500", { title: "Server Error" });
+});
+
+app.use((req, res, next) => {
+  if (!req.session) return next();
+  req.session.votedReviews = req.session.votedReviews || {};
+  next();
 });
 
 async function startServer() {
