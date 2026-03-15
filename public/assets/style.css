@@ -1644,3 +1644,33 @@ body {
 /* optional: make thumbnails clickable and slightly lift on hover */
 .media-frame a { display:block; width:100%; height:100%; }
 .media-frame:hover { transform: translateY(-2px); transition: transform .12s ease; }
+
+/* Manage toggle button (top-right of review card) */
+.review-card { position: relative; }
+.manage-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2f6b4a;
+  background-color: rgba(255,255,255,0.9);
+}
+
+/* Hide the edit/delete panel by default */
+.review-manage-box {
+  display: none;
+  margin-top: 12px;
+}
+
+/* Show when toggled */
+.review-manage-box.open {
+  display: block;
+}
+
+/* Keep dropdown CSS unaffected if used elsewhere */
+.review-dropdown { display: none; }

@@ -98,7 +98,11 @@
               </div>
 
               {{#if this.canManage}}
-                <div class="review-manage-box">
+                <button type="button" class="manage-toggle" onclick="document.getElementById('manage-{{this._id}}').classList.toggle('open')">
+                  Edit / Delete
+                </button>
+
+                <div id="manage-{{this._id}}" class="review-manage-box">
                   <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/edit">
                     <div class="form-group">
                       <label for="title-{{this._id}}">Title</label>
@@ -120,6 +124,7 @@
                     </div>
                     <button type="submit" class="login-button">Save Changes</button>
                   </form>
+
                   <form method="POST" action="/reviews/{{this._id}}/delete">
                     <button type="submit" class="review-delete-button">Delete Review</button>
                   </form>
