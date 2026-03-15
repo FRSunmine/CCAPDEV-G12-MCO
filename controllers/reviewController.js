@@ -252,3 +252,45 @@ exports.vote = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.respond = async (req, res, next) => {
+  try {
+    const review = await Review.findById(req.params.reviewId).populate("restaurant");
+
+    if (!review) {
+      return res.status(404).render("404", { title: "Review Not Found" });
+    }
+
+    const restaurant = await Restaurant.findById(review.restaurant._id).select("restaurantId owner");
+    const isOwnerForRestaurant = Boolean(
+      req.currentUser &&
+      req.currentUser.role === "owner" &&
+      restaurant &&
+      restaurant.owner &&
+      String(restaurant.owner) === String(req.currentUser._id)
+    );
+
+    if (!isOwnerForRestaurant) {
+      return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+    }
+
+    const responseBody = req.body.responseBody ? req.body.responseBody.trim() : "";
+    if (!responseBody) {
+      return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+    }
+
+    const timestamp = new Date();
+    review.ownerResponse = {
+      body: responseBody,
+      respondedAt: review.ownerResponse && review.ownerResponse.respondedAt ? review.ownerResponse.respondedAt : timestamp,
+      updatedAt: timestamp,
+    };
+    review.updatedAt = timestamp;
+
+    await review.save();
+
+    return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+  } catch (error) {
+    return next(error);
+  }
+};

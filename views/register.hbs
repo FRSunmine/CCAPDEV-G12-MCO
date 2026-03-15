@@ -26,6 +26,50 @@
         <label for="bio">Bio</label>
         <textarea id="bio" name="bio" rows="3">{{formData.bio}}</textarea>
       </div>
+      <section class="owner-request-panel">
+        <label class="checkbox-row" for="isOwnerRequest">
+          <input
+            type="checkbox"
+            id="isOwnerRequest"
+            name="isOwnerRequest"
+            {{#if formData.isOwnerRequest}}checked{{/if}}
+          >
+          <span>I am the owner of a listed establishment.</span>
+        </label>
+        <p class="form-note">If checked, we will also collect your restaurant and contact details for admin approval.</p>
+
+        <div class="form-group">
+          <label for="ownerRestaurantId">Listed Restaurant</label>
+          <select id="ownerRestaurantId" name="ownerRestaurantId">
+            <option value="">Select a restaurant</option>
+            {{#each restaurants}}
+              <option
+                value="{{this.restaurantId}}"
+                {{#if this.isOwned}}disabled{{/if}}
+                {{#if (eq ../formData.ownerRestaurantId this.restaurantId)}}selected{{/if}}
+              >
+                {{this.name}}{{#if this.isOwned}} (Owner already assigned){{/if}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ownerContactDetails">Contact Details</label>
+          <input
+            type="text"
+            id="ownerContactDetails"
+            name="ownerContactDetails"
+            value="{{formData.ownerContactDetails}}"
+            placeholder="Phone number, alternate email, or both"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="ownerRequestMessage">Owner Request Notes</label>
+          <textarea id="ownerRequestMessage" name="ownerRequestMessage" rows="3">{{formData.ownerRequestMessage}}</textarea>
+        </div>
+      </section>
       {{#if error}}
         <div class="error-message">{{error}}</div>
       {{/if}}

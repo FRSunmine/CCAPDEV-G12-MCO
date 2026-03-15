@@ -1,65 +1,60 @@
-<main class="page-container">
-    <h1>Contact Us</h1>
-
-    <section style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
-    <div>
-        <h2>Phone Numbers</h2>
-        <p>Primary: 0909 123 4567</p>
-        <p>Support: 0908 123 4567</p>
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row hero-row-single">
+      <div class="hero-text">
+        <h1>Owner Request Support</h1>
+        <p class="sub">Already have an account? Send your owner request here for admin review.</p>
+      </div>
     </div>
+  </section>
 
-    <div>
-        <h2>Email</h2>
-        <p>Main: <a href="mailto:mainanimo@animo-eats.example">main_animo@animoeats.example</a></p>
-        <p>Secondary:: <a href="mailto:secondanimo@animo-eats.example">second_animo@animoeats.example</a></p>
-    </div>
-    </section>
+  <section class="page-container contact-layout">
+    <section class="review-form-card contact-card">
+      <h2>Restaurant Owner Request</h2>
+      <p class="utility-copy">Use this form if you want your current account to be tagged as the owner of a restaurant. Admin can approve or reject the request from the in-app dashboard.</p>
 
-    <hr/>
+      {{#if requestSubmitted}}
+        <div class="success-box">Your owner request was submitted. Admin can now review it in the dashboard.</div>
+      {{/if}}
 
-    <section style="margin-top:36px;">
-        <h2>Are you a restaurant owner needing an account?</h2>
-        <p>Fill in here and we'll get back with you!</p>
+      {{#if requestError}}
+        <div class="error-box">{{requestError}}</div>
+      {{/if}}
 
-        {{#if ownerSuccess}}
-        <div class="notice">Thanks — we'll contact you about your restaurant account shortly.</div>
-        {{/if}}
+      {{#if currentUser}}
+        <form method="POST" action="/admin-support/owner-request">
+          <div class="form-group">
+            <label for="ownerRequestRestaurant">Restaurant</label>
+            <select id="ownerRequestRestaurant" name="restaurantId" required>
+              <option value="">Select a restaurant</option>
+              {{#each restaurants}}
+                <option
+                  value="{{this.restaurantId}}"
+                  {{#if this.isOwned}}disabled{{/if}}
+                  {{#if (eq ../selectedRestaurantId this.restaurantId)}}selected{{/if}}
+                >
+                  {{this.name}}{{#if this.isOwned}} (Owner already assigned){{/if}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
 
-        <form action="/contact-owner" method="post" class="contact-form" style="max-width:700px;">
-        <div class="form-grid">
-            <div class="form-group">
-            <label for="ownerFirstName">First name</label>
-            <input id="ownerFirstName" name="firstName" required />
-            </div>
+          <div class="form-group">
+            <label for="ownerRequestContact">Contact Details</label>
+            <input id="ownerRequestContact" name="contactDetails" type="text" value="{{formData.contactDetails}}" placeholder="Phone number, alternate email, or both" required>
+          </div>
 
-            <div class="form-group">
-            <label for="ownerLastName">Last name</label>
-            <input id="ownerLastName" name="lastName" required />
-            </div>
-        </div>
+          <div class="form-group">
+            <label for="ownerRequestMessage">Extra Notes</label>
+            <textarea id="ownerRequestMessage" name="message" rows="4" placeholder="Optional context for admin.">{{formData.message}}</textarea>
+          </div>
 
-        <div class="form-group">
-            <label for="ownerUsername">Username</label>
-            <input id="ownerUsername" name="username" required />
-        </div>
-
-        <div class="form-group">
-            <label for="ownerEmail">Email</label>
-            <input id="ownerEmail" name="email" type="email" required />
-        </div>
-
-        <p><b>NOTE</b>: Password will be given once request has been accepted</p>
-
-        <div class="form-group">
-            <label for="restaurantName">Restaurant name</label>
-            <input id="restaurantName" name="restaurantName" required />
-        </div>
-
-        <p class="sub">We'll contact you via email after reviewing your request.</p>
-        
-        <button type="submit" class="register-button">Request Account</button>
+          <button type="submit" class="register-button">Submit Request</button>
         </form>
-
-
+      {{else}}
+        <p class="utility-copy">Login first so admin can tie the request to your account.</p>
+        <a class="button-link" href="/login">Login to Continue</a>
+      {{/if}}
     </section>
+  </section>
 </main>

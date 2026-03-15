@@ -12,15 +12,20 @@
     <div class="restaurant-logo">
       <img src="{{restaurant.imageSrc}}" alt="{{restaurant.name}}">
     </div>
-    <div class="card-body restaurant-details">
-      <h3 class="title">{{restaurant.name}}</h3>
-      <p class="meta">
-        {{restaurant.location}} <br>
-        {{restaurant.priceRange}} • ★ {{restaurant.rating}}
-      </p>
-      <div class="cuisine-list">
-        {{#each restaurant.cuisineTypes}}
-          <span class="cuisine-btn">{{this}}</span>
+      <div class="card-body restaurant-details">
+        <h3 class="title">{{restaurant.name}}</h3>
+        <p class="meta">
+          {{restaurant.location}} <br>
+          {{restaurant.priceRange}} • ★ {{restaurant.rating}}
+        </p>
+        {{#if hasOwner}}
+          <p class="owner-chip">Managed by <a class="inline-link" href="/profile/{{owner.username}}">{{owner.username}}</a></p>
+        {{else}}
+          <p class="owner-chip owner-chip-open">No owner account assigned yet.</p>
+        {{/if}}
+        <div class="cuisine-list">
+          {{#each restaurant.cuisineTypes}}
+            <span class="cuisine-btn">{{this}}</span>
         {{/each}}
       </div>
       <p class="excerpt">{{restaurant.previewDescription}}</p>
@@ -99,6 +104,30 @@
           <a class="button-link" href="/login">Login to Review</a>
         </section>
       {{/if}}
+
+      <section class="review-form-card owner-request-card">
+        <h2>Owner Access</h2>
+        {{#if isOwnerForRestaurant}}
+          <p class="utility-copy">You can respond publicly to reviews for this restaurant below.</p>
+        {{else}}
+          {{#if isAdminUser}}
+            <p class="utility-copy">Assign restaurant owners from the admin dashboard.</p>
+            <a class="button-link secondary-button" href="/admin">Open Admin Dashboard</a>
+          {{else}}
+            {{#if canRequestOwnership}}
+              {{#if currentUser}}
+                <p class="utility-copy">Own this place? Send your contact details to admin and we can tag your account as the restaurant owner.</p>
+                <a class="button-link secondary-button" href="/admin-support?restaurantId={{restaurant.restaurantId}}">Are You the Owner?</a>
+              {{else}}
+                <p class="utility-copy">Own this place? Register first and include your owner details so admin can review the request.</p>
+                <a class="button-link secondary-button" href="/register?ownerRequest=1&restaurantId={{restaurant.restaurantId}}">Register as Owner</a>
+              {{/if}}
+            {{else}}
+              <p class="utility-copy">This restaurant already has an assigned owner account.</p>
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      </section>
     </aside>
 
     <section class="review-feed">
@@ -119,6 +148,14 @@
               <h4>{{this.title}}</h4>
               <p class="rating">Rating: {{this.rating}}/5</p>
               <p class="msg">{{this.body}}</p>
+
+              {{#if this.ownerResponse.body}}
+                <div class="owner-response-box">
+                  <p class="owner-response-label">Owner response</p>
+                  <p class="msg">{{this.ownerResponse.body}}</p>
+                  <p class="date">{{formatDate this.ownerResponse.updatedAt}}</p>
+                </div>
+              {{/if}}
             </div>
 
             {{!-- Single or multiple images --}}
@@ -147,30 +184,28 @@
             {{/if}}
 
             <div class="review-helpful">
-            <!-- Helpful (up) -->
-            <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote" style="display:inline">
-              <input type="hidden" name="direction" value="up">
-              <button type="submit"
-                class="helpful-btn
-                      {{#if (eq this.userVote "up")}}voted-up{{/if}}
-                      {{#if (eq this.userVote "down")}}muted{{/if}}">
-                Helpful 👍
-              </button>
-            </form>
+              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                <input type="hidden" name="direction" value="up">
+                <button type="submit" class="helpful-btn">Helpful</button>
+              </form>
+              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                <input type="hidden" name="direction" value="down">
+                <button type="submit" class="unhelpful-btn">Not Helpful</button>
+              </form>
+              <span>Helpful votes: {{this.helpfulCount}}</span>
+            </div>
 
-            <!-- Not Helpful (down) -->
-            <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote" style="display:inline">
-              <input type="hidden" name="direction" value="down">
-              <button type="submit"
-                class="unhelpful-btn
-                      {{#if (eq this.userVote "down")}}voted-down{{/if}}
-                      {{#if (eq this.userVote "up")}}muted{{/if}}">
-                Not Helpful 👎
-              </button>
-            </form>
-
-            <span>Helpful votes: <span class="helpful-count">{{this.helpfulCount}}</span></span>
-          </div>
+            {{#if ../isOwnerForRestaurant}}
+              <div class="owner-response-form-box">
+                <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/respond">
+                  <div class="form-group">
+                    <label for="owner-response-{{this._id}}">Public owner response</label>
+                    <textarea id="owner-response-{{this._id}}" name="responseBody" rows="3" required>{{this.ownerResponse.body}}</textarea>
+                  </div>
+                  <button type="submit" class="login-button">{{#if this.ownerResponse.body}}Update Response{{else}}Publish Response{{/if}}</button>
+                </form>
+              </div>
+            {{/if}}
           </article>
         {{/each}}
       {{else}}

@@ -4,6 +4,7 @@ const userSchema = new Schema({
   firstName: { type: String, required: true, trim: true },
   lastName: { type: String, required: true, trim: true },
   username: { type: String, required: true, unique: true, trim: true },
+  role: { type: String, enum: ["user", "owner", "admin"], default: "user" },
   handle: {
     type: String,
     trim: true,

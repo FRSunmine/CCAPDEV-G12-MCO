@@ -1,5 +1,6 @@
 const Restaurant = require("../models/Restaurant");
 const Review = require("../models/Review");
+const User = require("../models/User");
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -70,6 +71,7 @@ exports.getRestaurantPage = async (req, res, next) => {
     if (!restaurant) {
       return res.status(404).render("404", { title: "Restaurant Not Found" });
     }
+    const owner = restaurant.owner ? await User.findById(restaurant.owner).lean() : null;
 
     const reviews = await Review.find({ restaurant: restaurant._id })
       .populate("author")
@@ -77,32 +79,31 @@ exports.getRestaurantPage = async (req, res, next) => {
       .lean();
 
     const currentUserId = req.currentUser ? String(req.currentUser._id) : null;
-
-    // Ensure session map exists
-    const votedReviews = req.session.votedReviews || {};
-
-    // Map reviews and attach userVote for template convenience
-    const mappedReviews = reviews.map((review) => {
-      const userVote = votedReviews[String(review._id)] || null; // "up" | "down" | null
-      return {
-        ...review,
-        canManage: currentUserId === String(review.author._id),
-        authorProfilePath: `/profile/${review.author.username}`,
-        userVote
-      };
-    });
+    const isAdminUser = Boolean(req.currentUser && req.currentUser.role === "admin");
+    const isOwnerForRestaurant = Boolean(
+      req.currentUser &&
+      restaurant.owner &&
+      String(restaurant.owner) === currentUserId
+    );
+    const mappedReviews = reviews.map((review) => ({
+      ...review,
+      canManage: currentUserId === String(review.author._id),
+      authorProfilePath: `/profile/${review.author.username}`,
+    }));
 
     return res.render("review-template", {
       title: restaurant.name,
       restaurant,
+      owner,
       reviews: mappedReviews,
-      hasReviews: mappedReviews.length > 0
+      hasReviews: mappedReviews.length > 0,
+      isOwnerForRestaurant,
+      isAdminUser,
+      hasOwner: Boolean(owner),
+      canRequestOwnership: !restaurant.owner,
     });
   } catch (error) {
     return next(error);
   }
 };
-
-
-
 

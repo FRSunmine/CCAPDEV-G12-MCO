@@ -19,7 +19,11 @@
             <nav class="nav-links">
                 <a href="/">Welcome</a>
                 <a href="/restaurants">Search</a>
+                <a href="/admin-support">Contact</a>
                 {{#if currentUser}}
+                  {{#if (eq currentUser.role "admin")}}
+                    <a href="/admin">Admin</a>
+                  {{/if}}
                   <a href="/profile/{{currentUser.username}}">Profile</a>
                   <form class="nav-form" method="POST" action="/auth/logout">
                     <button type="submit" class="nav-link-button">Logout</button>

@@ -5,6 +5,7 @@ const session = require("express-session");
 
 const connectDB = require("./config/db");
 const loadCurrentUser = require("./middleware/loadCurrentUser");
+const adminRoutes = require("./routes/adminRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const authRoutes = require("./routes/authRoutes");
 const restaurantRoutes = require("./routes/restaurantRoutes");
@@ -60,6 +61,7 @@ app.get("/pages/contact", (req, res) => {
   res.render("contact", { layout: "main", title: "Contact" });
 });
 
+app.use("/admin", adminRoutes);
 app.use("/", pageRoutes);
 app.use("/auth", authRoutes);
 app.use("/restaurants", restaurantRoutes);
