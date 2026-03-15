@@ -186,11 +186,21 @@
             <div class="review-helpful">
               <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
                 <input type="hidden" name="direction" value="up">
-                <button type="submit" class="helpful-btn">Helpful</button>
+                <button
+                  type="submit"
+                  class="helpful-btn {{#if this.isHelpfulVoted}}voted-up{{/if}} {{#if this.isNotHelpfulVoted}}muted{{/if}}"
+                >
+                  Helpful
+                </button>
               </form>
               <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
                 <input type="hidden" name="direction" value="down">
-                <button type="submit" class="unhelpful-btn">Not Helpful</button>
+                <button
+                  type="submit"
+                  class="unhelpful-btn {{#if this.isNotHelpfulVoted}}voted-down{{/if}} {{#if this.isHelpfulVoted}}muted{{/if}}"
+                >
+                  Not Helpful
+                </button>
               </form>
               <span>Helpful votes: {{this.helpfulCount}}</span>
             </div>
@@ -299,5 +309,3 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
-
-

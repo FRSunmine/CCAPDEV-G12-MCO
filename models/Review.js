@@ -10,6 +10,7 @@ const reviewSchema = new Schema({
   body: { type: String, required: true, trim: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   helpfulCount: { type: Number, default: 0 },
+  votes: { type: [voteSchema], default: [] },
   ownerResponse: {
     body: { type: String, trim: true, default: "" },
     respondedAt: { type: Date, default: null },
