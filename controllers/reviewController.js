@@ -188,59 +188,60 @@ exports.vote = async (req, res, next) => {
     const reviewId = req.params.reviewId;
     const direction = req.body.direction === "down" ? "down" : "up";
 
-    // ensure session map exists (optional UI convenience)
-    req.session.votedReviews = req.session.votedReviews || {};
-    const prev = req.session.votedReviews[reviewId]; // "up" | "down" | undefined
-
-    // Determine inc and newUserVote (toggle behavior)
-    let inc = 0;
-    let newUserVote = null;
-
-    if (prev === direction) {
-      // toggle off
-      inc = direction === "up" ? -1 : 1;
-      newUserVote = null;
-      delete req.session.votedReviews[reviewId];
-    } else if (!prev) {
-      // first time
-      inc = direction === "up" ? 1 : -1;
-      newUserVote = direction;
-      req.session.votedReviews[reviewId] = direction;
-    } else {
-      // switching
-      if (prev === "down" && direction === "up") inc = 2;
-      else if (prev === "up" && direction === "down") inc = -2;
-      newUserVote = direction;
-      req.session.votedReviews[reviewId] = direction;
-    }
-
-    // Apply DB update (clamp to >= 0)
-    if (inc !== 0) {
-      const pipeline = [
-        {
-          $set: {
-            helpfulCount: {
-              $max: [0, { $add: ["$helpfulCount", inc] }]
-            }
-          }
-        }
-      ];
-      await Review.findOneAndUpdate({ _id: reviewId }, pipeline);
-    }
-
-    // Fetch review to get restaurantId for redirect safely
-    const review = await Review.findById(reviewId).select("restaurant").lean();
+    const review = await Review.findById(reviewId).select("restaurant votes helpfulCount").lean();
     if (!review || !review.restaurant) {
-      // fallback: redirect to home if we can't determine restaurant
       return res.redirect("/");
     }
 
-    // If restaurant is an ObjectId, fetch its restaurantId field
+    const updatedVotes = Array.isArray(review.votes) ? [...review.votes] : [];
+    const existingVoteIndex = updatedVotes.findIndex(
+      (vote) => String(vote.user) === userId
+    );
+
+    let helpfulDelta = 0;
+
+    if (existingVoteIndex >= 0) {
+      const previousDirection = updatedVotes[existingVoteIndex].direction;
+
+      if (previousDirection === direction) {
+        updatedVotes.splice(existingVoteIndex, 1);
+
+        if (direction === "up") {
+          helpfulDelta = -1;
+        }
+      } else {
+        updatedVotes[existingVoteIndex].direction = direction;
+
+        if (previousDirection === "up" && direction === "down") {
+          helpfulDelta = -1;
+        } else if (previousDirection === "down" && direction === "up") {
+          helpfulDelta = 1;
+        }
+      }
+    } else {
+      updatedVotes.push({
+        user: userId,
+        direction,
+      });
+
+      if (direction === "up") {
+        helpfulDelta = 1;
+      }
+    }
+
+    const updatedHelpfulCount = Math.max(0, (review.helpfulCount || 0) + helpfulDelta);
+    const updatedAt = new Date();
+
+    await Review.findByIdAndUpdate(reviewId, {
+      votes: updatedVotes,
+      helpfulCount: updatedHelpfulCount,
+      updatedAt,
+    });
+
     let redirectRestaurantId = null;
     if (typeof review.restaurant === "object" && review.restaurant.restaurantId) {
       redirectRestaurantId = review.restaurant.restaurantId;
     } else {
-      // fetch restaurant doc
       const rest = await Restaurant.findById(review.restaurant).select("restaurantId").lean();
       redirectRestaurantId = rest ? rest.restaurantId : null;
     }

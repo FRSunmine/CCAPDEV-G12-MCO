@@ -89,6 +89,13 @@ exports.getRestaurantPage = async (req, res, next) => {
       ...review,
       canManage: currentUserId === String(review.author._id),
       authorProfilePath: `/profile/${review.author.username}`,
+      userVote: currentUserId
+        ? (review.votes || []).find((vote) => String(vote.user) === currentUserId)?.direction || null
+        : null,
+    })).map((review) => ({
+      ...review,
+      isHelpfulVoted: review.userVote === "up",
+      isNotHelpfulVoted: review.userVote === "down",
     }));
 
     return res.render("review-template", {
@@ -106,4 +113,3 @@ exports.getRestaurantPage = async (req, res, next) => {
     return next(error);
   }
 };
-

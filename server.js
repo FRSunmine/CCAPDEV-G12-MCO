@@ -84,12 +84,6 @@ app.use((err, req, res, next) => {
   return res.status(500).render("500", { title: "Server Error" });
 });
 
-app.use((req, res, next) => {
-  if (!req.session) return next();
-  req.session.votedReviews = req.session.votedReviews || {};
-  next();
-});
-
 async function startServer() {
   await connectDB();
 
