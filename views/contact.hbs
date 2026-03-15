@@ -1,0 +1,60 @@
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row hero-row-single">
+      <div class="hero-text">
+        <h1>Owner Request Support</h1>
+        <p class="sub">Already have an account? Send your owner request here for admin review.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-container contact-layout">
+    <section class="review-form-card contact-card">
+      <h2>Restaurant Owner Request</h2>
+      <p class="utility-copy">Use this form if you want your current account to be tagged as the owner of a restaurant. Admin can approve or reject the request from the in-app dashboard.</p>
+
+      {{#if requestSubmitted}}
+        <div class="success-box">Your owner request was submitted. Admin can now review it in the dashboard.</div>
+      {{/if}}
+
+      {{#if requestError}}
+        <div class="error-box">{{requestError}}</div>
+      {{/if}}
+
+      {{#if currentUser}}
+        <form method="POST" action="/admin-support/owner-request">
+          <div class="form-group">
+            <label for="ownerRequestRestaurant">Restaurant</label>
+            <select id="ownerRequestRestaurant" name="restaurantId" required>
+              <option value="">Select a restaurant</option>
+              {{#each restaurants}}
+                <option
+                  value="{{this.restaurantId}}"
+                  {{#if this.isOwned}}disabled{{/if}}
+                  {{#if (eq ../selectedRestaurantId this.restaurantId)}}selected{{/if}}
+                >
+                  {{this.name}}{{#if this.isOwned}} (Owner already assigned){{/if}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ownerRequestContact">Contact Details</label>
+            <input id="ownerRequestContact" name="contactDetails" type="text" value="{{formData.contactDetails}}" placeholder="Phone number, alternate email, or both" required>
+          </div>
+
+          <div class="form-group">
+            <label for="ownerRequestMessage">Extra Notes</label>
+            <textarea id="ownerRequestMessage" name="message" rows="4" placeholder="Optional context for admin.">{{formData.message}}</textarea>
+          </div>
+
+          <button type="submit" class="register-button">Submit Request</button>
+        </form>
+      {{else}}
+        <p class="utility-copy">Login first so admin can tie the request to your account.</p>
+        <a class="button-link" href="/login">Login to Continue</a>
+      {{/if}}
+    </section>
+  </section>
+</main>

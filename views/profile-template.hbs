@@ -12,9 +12,13 @@
     <aside class="profile-sidebar">
       <h3>Profile</h3>
       <p>{{profile.handle}}</p>
+      <p>Role: {{profile.role}}</p>
       <p>Member since {{formatDate profile.createdAt}}</p>
       <p>{{reviewsCount}} review{{#unless (eq reviewsCount 1)}}s{{/unless}} shared with the community.</p>
       <p>{{#if isOwnProfile}}You can edit or delete your reviews below.{{else}}This is a public profile.{{/if}}</p>
+      {{#if (eq profile.role "owner")}}
+        <p>Manages {{managedRestaurantsCount}} restaurant{{#unless (eq managedRestaurantsCount 1)}}s{{/unless}}.</p>
+      {{/if}}
       {{#if isOwnProfile}}
         <a class="button-link sidebar-button" href="/edit-profile">Edit Profile</a>
       {{/if}}
@@ -22,6 +26,26 @@
     </aside>
 
     <section class="results">
+      {{#if isOwnProfile}}
+        {{#if pendingOwnerRequests}}
+          <section class="status-panel pending-panel">
+            <h2>Owner Requests Pending</h2>
+            {{#each pendingOwnerRequests}}
+              <p>Your request for <a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a> is waiting for admin approval.</p>
+            {{/each}}
+          </section>
+        {{/if}}
+
+        {{#if rejectedOwnerRequests}}
+          <section class="status-panel rejected-panel">
+            <h2>Owner Requests Rejected</h2>
+            {{#each rejectedOwnerRequests}}
+              <p>Your request for <a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a> was rejected. You can submit a new request if your details change.</p>
+            {{/each}}
+          </section>
+        {{/if}}
+      {{/if}}
+
       <div class="profile-header card profile-view-card">
         <div class="card-thumb profile-pic">
           <img src="{{profile.profilePic}}" alt="{{profile.username}}" loading="lazy"
@@ -32,8 +56,26 @@
           <p class="handle">{{profile.handle}}</p>
           <p class="bio">{{profile.bio}}</p>
           <p class="meta">Reviews: {{reviewsCount}}</p>
+          {{#if (eq profile.role "owner")}}
+            <p class="meta">Owner account</p>
+          {{/if}}
         </div>
       </div>
+
+      {{#if (eq profile.role "owner")}}
+        <section class="owner-restaurant-panel">
+          <h2>Managed Restaurants</h2>
+          {{#if managedRestaurantsCount}}
+            <div class="owner-restaurant-list">
+              {{#each managedRestaurants}}
+                <a class="owner-restaurant-link" href="{{this.restaurantPath}}">{{this.name}}</a>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="utility-copy">No restaurants assigned yet.</p>
+          {{/if}}
+        </section>
+      {{/if}}
 
       <h2>Reviews</h2>
       {{#if reviewsCount}}

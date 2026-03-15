@@ -5,6 +5,11 @@ const reviewSchema = new Schema({
   body: { type: String, required: true, trim: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   helpfulCount: { type: Number, default: 0 },
+  ownerResponse: {
+    body: { type: String, trim: true, default: "" },
+    respondedAt: { type: Date, default: null },
+    updatedAt: { type: Date, default: null },
+  },
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant", required: true },
   createdAt: { type: Date, default: Date.now },

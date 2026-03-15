@@ -5,6 +5,7 @@ const session = require("express-session");
 
 const connectDB = require("./config/db");
 const loadCurrentUser = require("./middleware/loadCurrentUser");
+const adminRoutes = require("./routes/adminRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const authRoutes = require("./routes/authRoutes");
 const restaurantRoutes = require("./routes/restaurantRoutes");
@@ -57,6 +58,7 @@ app.use(
 app.use(loadCurrentUser);
 app.use(express.static(path.join(__dirname, "public"), { index: false }));
 
+app.use("/admin", adminRoutes);
 app.use("/", pageRoutes);
 app.use("/auth", authRoutes);
 app.use("/restaurants", restaurantRoutes);

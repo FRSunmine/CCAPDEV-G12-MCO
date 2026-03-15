@@ -570,6 +570,18 @@ body {
   padding: 10px;
   border-radius: 8px;
   text-align: center;
+  background: #fff0f0;
+  color: #9f1d1d;
+}
+
+.error-box {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid #f1b3b3;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #9f1d1d;
+  font-weight: 700;
 }
 
 .login-link,
@@ -589,6 +601,27 @@ body {
 .login-link a:hover,
 .signup-link a:hover {
   text-decoration: underline;
+}
+
+.owner-request-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #dcebdd;
+  border-radius: 12px;
+  background: #f8fcf9;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #055a2f;
+}
+
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
 }
 
 /* Welcome Page */
@@ -1239,6 +1272,218 @@ body {
 .helpful-btn,
 .unhelpful-btn {
   font-weight: 700;
+}
+
+.owner-chip {
+  display: inline-flex;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ecf8f1;
+  color: #055a2f;
+  font-weight: 700;
+}
+
+.owner-chip-open {
+  background: #fff5df;
+  color: #8a5a00;
+}
+
+.owner-request-card {
+  margin-top: 20px;
+}
+
+.owner-response-box,
+.owner-response-form-box,
+.owner-restaurant-panel,
+.contact-card,
+.status-panel {
+  margin-top: 18px;
+}
+
+.owner-response-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-left: 4px solid #055a2f;
+  border-radius: 10px;
+  background: #f5fbf7;
+}
+
+.owner-response-label {
+  margin: 0 0 8px;
+  color: #055a2f;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.owner-restaurant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.owner-restaurant-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #ecf8f1;
+  color: #055a2f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.owner-restaurant-link:hover {
+  background: #d9f7e8;
+}
+
+.contact-layout {
+  padding-bottom: 48px;
+}
+
+.contact-card {
+  max-width: 760px;
+}
+
+.status-panel {
+  padding: 18px 20px;
+  border-radius: 12px;
+}
+
+.pending-panel {
+  border: 1px solid #f0d28a;
+  background: #fff8e8;
+}
+
+.rejected-panel {
+  border: 1px solid #f1b3b3;
+  background: #fff3f3;
+}
+
+.success-box {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid #a8d5ba;
+  border-radius: 10px;
+  background: #ecf8f1;
+  color: #055a2f;
+  font-weight: 700;
+}
+
+.admin-shell {
+  padding-bottom: 48px;
+}
+
+.admin-section {
+  margin-bottom: 32px;
+}
+
+.admin-section-heading {
+  margin-bottom: 16px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.admin-card {
+  padding: 20px;
+  border: 1px solid #e2ece4;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.admin-card h3 {
+  margin: 0;
+  color: #055a2f;
+}
+
+.admin-card p {
+  margin: 8px 0 0;
+}
+
+.admin-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.status-user {
+  background: #eef2f7;
+  color: #334155;
+}
+
+.status-owner,
+.status-approved {
+  background: #e9f8ef;
+  color: #0b6b37;
+}
+
+.status-admin {
+  background: #e8f0ff;
+  color: #1d4ed8;
+}
+
+.status-pending {
+  background: #fff5db;
+  color: #8a5a00;
+}
+
+.status-rejected {
+  background: #fff0f0;
+  color: #9f1d1d;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.admin-actions form {
+  flex: 1;
+  margin: 0;
+}
+
+.compact-button {
+  margin-top: 0;
+}
+
+.admin-assign-card {
+  margin-bottom: 16px;
+}
+
+.admin-inline-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .admin-inline-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 900px) {
