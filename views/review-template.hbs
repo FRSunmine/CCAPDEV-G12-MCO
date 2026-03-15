@@ -32,12 +32,15 @@
       {{#if currentUser}}
         <section class="login-container review-form-card">
           <h1>Add a Review</h1>
-          <form method="POST" action="/reviews">
+          <!-- in review-template.hbs Add enctype and file inputs -->
+          <form method="POST" action="/reviews" enctype="multipart/form-data" class="review-post-form">
             <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
+
             <div class="form-group">
               <label for="reviewTitle">Title</label>
               <input id="reviewTitle" name="title" type="text" required />
             </div>
+
             <div class="form-group">
               <label for="reviewRating">Rating</label>
               <select id="reviewRating" name="rating" required>
@@ -48,12 +51,46 @@
                 <option value="1">1</option>
               </select>
             </div>
+
             <div class="form-group">
               <label for="reviewBody">Review</label>
               <textarea id="reviewBody" name="body" rows="5" required></textarea>
             </div>
+
+            <!-- Icon buttons for media -->
+            <div class="form-group media-controls">
+              <!-- Hidden file inputs -->
+              <input id="inputImages" name="images" type="file" accept="image/*" multiple class="visually-hidden">
+              <input id="inputVideo" name="video" type="file" accept="video/*" class="visually-hidden">
+
+              <!-- Icon buttons (labels) -->
+              <label for="inputImages" class="media-icon-btn" title="Attach images (max 3)">
+                <!-- simple inline SVG icon for image -->
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                  <path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14h18zM8.5 11.5l2.5 3 3.5-4.5L19 17H5l3.5-5.5z"/>
+                </svg>
+                <span class="media-label">Image</span>
+              </label>
+
+              <label for="inputVideo" class="media-icon-btn" title="Attach a video">
+                <!-- simple inline SVG icon for video -->
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                  <path fill="currentColor" d="M17 10.5V7c0-1.1-.9-2-2-2H5C3.9 5 3 5.9 3 7v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z"/>
+                </svg>
+                <span class="media-label">Video</span>
+              </label>
+
+              <!-- small preview area -->
+              <div class="media-preview" aria-live="polite">
+                <span class="media-help">Optional: attach images or a video</span>
+                <div class="media-files"></div>
+              </div>
+            </div>
+
             <button type="submit" class="register-button">Post Review</button>
           </form>
+
+
         </section>
       {{else}}
         <section class="review-form-card guest-review-card">
@@ -83,6 +120,31 @@
               <p class="rating">Rating: {{this.rating}}/5</p>
               <p class="msg">{{this.body}}</p>
             </div>
+
+            {{!-- Single or multiple images --}}
+            {{#if this.images}}
+              <div class="review-media images">
+                {{#each this.images}}
+                  <div class="media-frame">
+                    <img class="review-image" src="/{{this}}" alt="Review image">
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
+
+            {{!-- Single video (or videos array) --}}
+            {{#if this.videos}}
+              <div class="review-media videos">
+                {{#each this.videos}}
+                  <div class="media-frame">
+                    <video class="review-video" controls preload="metadata">
+                      <source src="/{{this}}" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
 
             <div class="review-helpful">
             <!-- Helpful (up) -->
@@ -117,5 +179,90 @@
     </section>
   </section>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const inputImages = document.getElementById("inputImages");
+  const inputVideo = document.getElementById("inputVideo");
+  const previewFiles = document.querySelector(".media-files");
+  const mediaHelp = document.querySelector(".media-help");
+
+  function clearPreview() {
+    previewFiles.innerHTML = "";
+  }
+
+  function showImagePreviews(files) {
+    clearPreview();
+    const max = 3;
+    const list = Array.from(files).slice(0, max);
+    list.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const img = document.createElement("img");
+      img.src = url;
+      img.className = "media-thumb";
+      img.alt = file.name;
+      previewFiles.appendChild(img);
+      // revoke object URL after image loads
+      img.onload = () => URL.revokeObjectURL(url);
+    });
+    if (files.length > max) {
+      const more = document.createElement("div");
+      more.className = "media-file-pill";
+      more.textContent = `+${files.length - max} more`;
+      previewFiles.appendChild(more);
+    }
+    mediaHelp.textContent = "Images selected (max 3). Video will be cleared.";
+  }
+
+  function showVideoPreview(file) {
+    clearPreview();
+    const pill = document.createElement("div");
+    pill.className = "media-file-pill";
+    pill.textContent = file.name;
+    previewFiles.appendChild(pill);
+    mediaHelp.textContent = "Video selected. Images will be cleared.";
+  }
+
+  inputImages.addEventListener("change", (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      clearPreview();
+      mediaHelp.textContent = "Optional: attach images or a video";
+      return;
+    }
+    // clear video input if any
+    if (inputVideo.value) {
+      inputVideo.value = "";
+    }
+    showImagePreviews(files);
+  });
+
+  inputVideo.addEventListener("change", (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      clearPreview();
+      mediaHelp.textContent = "Optional: attach images or a video";
+      return;
+    }
+    // clear images input if any
+    if (inputImages.value) {
+      inputImages.value = "";
+    }
+    showVideoPreview(files[0]);
+  });
+
+  // optional: prevent selecting more than 3 images at the OS picker level is not possible,
+  // but we can warn on submit. Add a submit guard:
+  const form = document.querySelector(".review-post-form");
+  form.addEventListener("submit", (e) => {
+    if (inputImages.files && inputImages.files.length > 3) {
+      e.preventDefault();
+      alert("Please select up to 3 images.");
+      return false;
+    }
+    // allow submit; server will handle file limits as well
+  });
+});
+</script>
 
 

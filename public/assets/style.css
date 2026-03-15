@@ -1286,3 +1286,116 @@ body {
     width: 100%;
   }
 }
+
+
+/* visually hidden helper */
+.visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
+
+/* icon button */
+.media-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin-right: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .12s, border-color .12s, transform .06s;
+}
+.media-icon-btn:hover { background: #f6f8fb; transform: translateY(-1px); }
+.media-icon-btn .icon { display:block; color: #444; }
+.media-icon-btn .media-label { display:inline-block; font-weight:600; }
+
+/* preview area */
+.media-preview { display:inline-block; vertical-align:middle; margin-left:8px; font-size:13px; color:#666; }
+.media-preview .media-files { margin-top:6px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+/* thumbnail */
+.media-thumb {
+  width:72px;
+  height:72px;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid #e6e6e6;
+  box-shadow:0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* filename pill for video */
+.media-file-pill {
+  display:inline-block;
+  padding:6px 8px;
+  border-radius:999px;
+  background:#f3f4f6;
+  border:1px solid #e0e0e0;
+  color:#333;
+  font-size:13px;
+}
+
+/* helper text */
+.media-help { display:block; color:#888; font-size:12px; margin-bottom:4px; }
+
+/* Review media container: fixed vertical height, full card width */
+:root {
+  --review-media-height: 450px;
+}
+
+/* wrapper for any media block inside a review card */
+.review-media {
+  width: 100%;
+  margin-top: 12px;
+  display: block;
+  gap: 8px;
+}
+
+/* single media frame (used for single image or single video) */
+.media-frame {
+  width: 100%;
+  height: var(--review-media-height);
+  background: #000; /* fallback background for letterboxing */
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-frame img.review-image,
+.media-frame video.review-video {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ensure video fills the frame area while preserving aspect ratio */
+.media-frame video.review-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* multiple images: responsive grid of thumbnails that each use the same frame height */
+.review-media.images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.review-media.images .media-frame {
+  height: var(--review-media-height);
+}
+
+/* small-screen tweak: reduce height on narrow viewports */
+@media (max-width: 520px) {
+  :root { --review-media-height: 160px; }
+}
+
+/* optional: make thumbnails clickable and slightly lift on hover */
+.media-frame a { display:block; width:100%; height:100%; }
+.media-frame:hover { transform: translateY(-2px); transition: transform .12s ease; }

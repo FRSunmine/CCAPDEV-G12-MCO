@@ -92,7 +92,6 @@ exports.getRestaurantPage = async (req, res, next) => {
       };
     });
 
-
     return res.render("review-template", {
       title: restaurant.name,
       restaurant,
