@@ -64,6 +64,7 @@ exports.getRestaurantListPage = async (req, res, next) => {
   }
 };
 
+// restaurantController.js — updated getRestaurantPage
 exports.getRestaurantPage = async (req, res, next) => {
   try {
     const restaurant = await Restaurant.findOne({ restaurantId: req.params.restaurantId }).lean();
