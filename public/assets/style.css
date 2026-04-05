@@ -4,8 +4,8 @@ html, body { height: 100%; margin: 0; }
 
 /* page background + base text */
 body {
-  background: #f6fbf7;          
-  color: #0b1a12;               
+  background: #f6fbf7;
+  color: #0b1a12;
   font-family: "Fredoka", sans-serif;
   font-size: 16px;
   line-height: 1.4;
@@ -66,7 +66,7 @@ body {
   padding: 6px 18px;
   border-radius: 6px;
   font-size: 20px;
-  font-weight: 600; 
+  font-weight: 600;
   font-family: inherit;
 }
 
@@ -184,9 +184,9 @@ body {
   border: 1px solid #e9efe9;
   font-size: 20px;
 }
-.filters h3 { 
-  margin: 0 0 10px; 
-  color: #055a2f; 
+.filters h3 {
+  margin: 0 0 10px;
+  color: #055a2f;
 }
 
 .filters legend {
@@ -332,7 +332,6 @@ body {
   max-height: 150px; /* restrict text block height */
   overflow: hidden;
   text-overflow: ellipsis;
-
 }
 /* cuisine_type filter tags */
 .cuisine-list {
@@ -437,15 +436,12 @@ body {
   font-style: italic;
 }
 
-
-
-/* footer - darker grey */
+/* footer - darker grey (no duplicate margin here) */
 .site-footer {
   background: #323232; /* darker grey */
   color: #ffffff;
   border-top: 1px solid rgba(0,0,0,0.06);
   padding: 18px 0;
-  margin-top: 32px;
 }
 
 .site-footer .container {
@@ -748,7 +744,6 @@ body {
   margin-top: 8px;
 }
 
-
 /* profile page sidebar */
 .profile-sidebar {
   width: 210px;
@@ -784,8 +779,6 @@ body {
   color: #111;           /* strong title color like example */
   line-height: 1.05;
 }
-
-
 
 /* Review Template */
 
@@ -828,7 +821,6 @@ body {
 }
 /* Reviews section */
 .reviews-section {
-  /*max-width: 700px;*/
   margin-right: 20%;
   padding: 20px;
 }
@@ -887,7 +879,6 @@ body {
   margin: 0;
 }
 
-
 /* Review message */
 .review-message h4 {
   margin: 0;
@@ -919,7 +910,6 @@ body {
   gap: 10px;
 }
 
-/* default: both lit */
 /* Base button look (both lit by default) */
 .helpful-btn,
 .unhelpful-btn {
@@ -1040,19 +1030,55 @@ body {
 
 .review-card {
   flex: 1;
-  position: relative; 
+  position: relative;
 }
 
-/* Review drop-down (edit and delete option) */
+/* Manage / dropdown area consolidation */
+/* Review card is positioned relative so controls can be absolutely placed */
+.review-card { position: relative; }
+
+/* Manage toggle (top-right of review card) */
+.manage-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2f6b4a;
+  background-color: rgba(255,255,255,0.9);
+  transition: background-color .12s ease, transform .08s ease, box-shadow .12s ease;
+}
+
+.manage-toggle:hover,
+.manage-toggle:focus {
+  background-color: #e6f6ea;
+  box-shadow: 0 6px 14px rgba(47,107,74,0.08);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Hide the edit/delete panel by default */
+.review-manage-box {
+  display: none;
+  margin-top: 12px;
+}
+
+/* Show when toggled (the template toggles 'open') */
+.review-manage-box.open {
+  display: block;
+}
+
+/* Dropdown summary/menu styling (kept available if used elsewhere) */
 .review-dropdown {
   position: absolute;
   top: 12px;
   right: 12px;
   z-index: 5;
 }
-body { display: flex; flex-direction: column; min-height: 100vh; }
-main, .page-container { flex: 1 0 auto; }
-.site-footer { margin-top: auto; padding: 18px 0; }
 
 .review-dropdown summary {
   list-style: none;
@@ -1536,7 +1562,6 @@ main, .page-container { flex: 1 0 auto; }
   }
 }
 
-
 /* visually hidden helper */
 .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
 
@@ -1645,48 +1670,12 @@ main, .page-container { flex: 1 0 auto; }
   :root { --review-media-height: 160px; }
 }
 
-/* optional: make thumbnails clickable and slightly lift on hover */
 .media-frame a { display:block; width:100%; height:100%; }
 .media-frame:hover { transform: translateY(-2px); transition: transform .12s ease; }
 
-/* Manage toggle button (top-right of review card) */
-.review-card { position: relative; }
+.review-dropdown {}
 
-.manage-toggle {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: 1px solid rgba(0,0,0,0.06);
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  color: #2f6b4a;
-  background-color: rgba(255,255,255,0.9);
-}
-.manage-toggle { 
-  transition: background-color .12s ease, transform .08s ease, box-shadow .12s ease; 
-}
-
-.manage-toggle:hover,
-.manage-toggle:focus { 
-  background-color: #e6f6ea; 
-  box-shadow: 0 6px 14px rgba(47,107,74,0.08); 
-  transform: translateY(-2px); 
-  outline: none; 
-}
-
-/* Hide the edit/delete panel by default */
-.review-manage-box {
-  display: none;
-  margin-top: 12px;
-}
-
-/* Show when toggled */
-.review-manage-box.open {
-  display: block;
-}
-
-/* Keep dropdown CSS unaffected if used elsewhere */
-.review-dropdown { display: none; }
+/* End of main rules - sticky footer rules last so they reliably apply */
+body { display: flex; flex-direction: column; min-height: 100vh; }
+main, .page-container { flex: 1 0 auto; }
+.site-footer { margin-top: auto; padding: 18px 0; }
