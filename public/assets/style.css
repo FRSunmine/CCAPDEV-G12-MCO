@@ -1673,7 +1673,7 @@ body {
 .media-frame a { display:block; width:100%; height:100%; }
 .media-frame:hover { transform: translateY(-2px); transition: transform .12s ease; }
 
-.review-dropdown {}
+/* .review-dropdown {} */
 
 /* End of main rules - sticky footer rules last so they reliably apply */
 body { display: flex; flex-direction: column; min-height: 100vh; }
