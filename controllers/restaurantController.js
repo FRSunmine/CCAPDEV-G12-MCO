@@ -52,7 +52,7 @@ exports.getRestaurantListPage = async (req, res, next) => {
     const cuisines = (await Restaurant.distinct("cuisineTypes"))
       .sort((left, right) => left.localeCompare(right));
 
-    return res.render("search", {
+    return res.render("resto/search", {
       title: "Search Restaurants",
       restaurants: mappedRestaurants,
       cuisines,
@@ -69,7 +69,7 @@ exports.getRestaurantPage = async (req, res, next) => {
   try {
     const restaurant = await Restaurant.findOne({ restaurantId: req.params.restaurantId }).lean();
     if (!restaurant) {
-      return res.status(404).render("404", { title: "Restaurant Not Found" });
+      return res.status(404).render("pages/404", { title: "Restaurant Not Found" });
     }
     const owner = restaurant.owner ? await User.findById(restaurant.owner).lean() : null;
 
@@ -99,7 +99,7 @@ exports.getRestaurantPage = async (req, res, next) => {
       isDownvoted: review.userVote === "down",
     }));
 
-    return res.render("review-template", {
+    return res.render("resto/review-template", {
       title: restaurant.name,
       restaurant,
       owner,

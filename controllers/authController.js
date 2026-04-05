@@ -5,7 +5,7 @@ const { createPendingOwnerRequest, getOwnerRequestRestaurants, validateOwnerRequ
 async function renderRegisterPage(res, { error, formData }) {
   const restaurants = await getOwnerRequestRestaurants();
 
-  return res.status(400).render("register", {
+  return res.status(400).render("auth/register", {
     title: "Register",
     error,
     restaurants,
@@ -113,7 +113,7 @@ exports.login = async (req, res, next) => {
     const password = req.body.password || "";
 
     if (!identifier || !password) {
-      return res.status(400).render("login", {
+      return res.status(400).render("auth/login", {
         title: "Login",
         error: "Please enter both your username/email and password.",
       });
@@ -127,7 +127,7 @@ exports.login = async (req, res, next) => {
       ],
     });
     if (!user) {
-      return res.status(400).render("login", {
+      return res.status(400).render("auth/login", {
         title: "Login",
         error: "Invalid credentials.",
       });
@@ -135,7 +135,7 @@ exports.login = async (req, res, next) => {
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(400).render("login", {
+      return res.status(400).render("auth/login", {
         title: "Login",
         error: "Invalid credentials.",
       });

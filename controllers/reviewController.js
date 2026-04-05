@@ -54,12 +54,12 @@ exports.create = async (req, res, next) => {
     const rating = Number(req.body.rating);
 
     if (!restaurantId) {
-      return res.status(400).render("400", { title: "Bad Request", message: "Missing restaurantId" });
+      return res.status(400).render("pages/400", { title: "Bad Request", message: "Missing restaurantId" });
     }
 
     const restaurant = await Restaurant.findOne({ restaurantId }).select("_id restaurantId").lean();
     if (!restaurant) {
-      return res.status(404).render("404", { title: "Restaurant Not Found" });
+      return res.status(404).render("pages/404", { title: "Restaurant Not Found" });
     }
 
     // Validate required fields
@@ -128,7 +128,7 @@ exports.update = async (req, res, next) => {
     }).populate("restaurant");
 
     if (!review) {
-      return res.status(404).render("404", { title: "Review Not Found" });
+      return res.status(404).render("pages/404", { title: "Review Not Found" });
     }
 
     const title = req.body.title ? req.body.title.trim() : "";

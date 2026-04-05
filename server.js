@@ -68,20 +68,20 @@ app.use("/restaurants", restaurantRoutes);
 app.use("/reviews", reviewRoutes);
 
 app.use((req, res) => {
-  res.status(404).render("404", { title: "Page Not Found" });
+  res.status(404).render("pages/404", { title: "Page Not Found" });
 });
 
 app.use((err, req, res, next) => {
   console.error(err);
 
   if (err.name === "MongoServerSelectionError") {
-    return res.status(503).render("503", {
+    return res.status(503).render("pages/503", {
       title: "Database Unavailable",
       errorMessage: "MongoDB is not reachable right now. Start MongoDB and reload the page.",
     });
   }
 
-  return res.status(500).render("500", { title: "Server Error" });
+  return res.status(500).render("pages/500", { title: "Server Error" });
 });
 
 async function startServer() {

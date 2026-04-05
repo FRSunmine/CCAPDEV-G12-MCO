@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
   }
 
   if (req.currentUser.role !== "admin") {
-    return res.status(403).render("403", {
+    return res.status(403).render("pages/403", {
       title: "Access Denied",
       errorMessage: "Only admin accounts can access that page.",
     });

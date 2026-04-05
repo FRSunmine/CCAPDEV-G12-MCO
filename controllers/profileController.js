@@ -10,7 +10,7 @@ exports.updateProfile = async (req, res, next) => {
     const profilePic = req.body.profilePic ? req.body.profilePic.trim() : "";
 
     if (!firstName || !lastName || !username || !email) {
-      return res.status(400).render("edit-profile", {
+      return res.status(400).render("user/edit-profile", {
         title: "Edit Profile",
         error: "Please fill in all required fields.",
         formData: { firstName, lastName, username, email, bio, profilePic },
@@ -23,7 +23,7 @@ exports.updateProfile = async (req, res, next) => {
     });
 
     if (existingUser) {
-      return res.status(400).render("edit-profile", {
+      return res.status(400).render("user/edit-profile", {
         title: "Edit Profile",
         error: "That username or email is already being used.",
         formData: { firstName, lastName, username, email, bio, profilePic },

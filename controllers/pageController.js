@@ -5,7 +5,7 @@ const OwnerRequest = require("../models/OwnerRequest");
 const { getOwnerRequestRestaurants } = require("../services/ownerRequestService");
 
 exports.getWelcomePage = (req, res) => {
-  res.render("welcome", { title: "Welcome" });
+  res.render("pages/welcome", { title: "Welcome" });
 };
 
 exports.getLoginPage = (req, res) => {
@@ -17,7 +17,7 @@ exports.getLoginPage = (req, res) => {
     return res.redirect(`/profile/${req.currentUser.username}`);
   }
 
-  return res.render("login", {
+  return res.render("auth/login", {
     title: "Login",
     error: req.query.error || null,
   });
@@ -36,7 +36,7 @@ exports.getRegisterPage = async (req, res, next) => {
     const selectedRestaurantId = req.query.restaurantId ? req.query.restaurantId.trim() : "";
     const restaurants = await getOwnerRequestRestaurants();
 
-    return res.render("register", {
+    return res.render("auth/register", {
       title: "Register",
       error: req.query.error || null,
       restaurants,
@@ -61,7 +61,7 @@ exports.getProfilePage = async (req, res, next) => {
   try {
     const profile = await User.findOne({ username: req.params.username }).lean();
     if (!profile) {
-      return res.status(404).render("404", { title: "User Not Found" });
+      return res.status(404).render("pages/404", { title: "User Not Found" });
     }
 
     const reviews = await Review.find({ author: profile._id })
@@ -101,7 +101,7 @@ exports.getProfilePage = async (req, res, next) => {
         restaurantPath: `/restaurants/${request.restaurant.restaurantId}`,
       }));
 
-    return res.render("profile-template", {
+    return res.render("user/profile-template", {
       title: profile.username,
       profile,
       reviews: mappedReviews,
@@ -122,7 +122,7 @@ exports.getContactPage = async (req, res, next) => {
     const selectedRestaurantId = req.query.restaurantId ? req.query.restaurantId.trim() : "";
     const restaurants = await getOwnerRequestRestaurants();
 
-    return res.render("contact", {
+    return res.render("pages/contact", {
       title: "Contact Admin",
       restaurants,
       selectedRestaurantId,
@@ -140,7 +140,7 @@ exports.getContactPage = async (req, res, next) => {
 };
 
 exports.getEditProfilePage = (req, res) => {
-  return res.render("edit-profile", {
+  return res.render("user/edit-profile", {
     title: "Edit Profile",
     formData: {
       firstName: req.currentUser.firstName || "",
