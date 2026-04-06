@@ -149,7 +149,7 @@ Recommended production steps:
 Deployment URL:
 
 ```text
-TO_BE_FILLED_AFTER_DEPLOYMENT
+https://ccapdev-g12-mco.onrender.com
 ```
 
 ## Submission Checklist
