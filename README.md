@@ -166,3 +166,10 @@ https://ccapdev-g12-mco.onrender.com
 
 - Old prototype files inside `public/archived_pages/` are not part of the current MVC app.
 - If you see `ECONNREFUSED 127.0.0.1:27017`, MongoDB is not running or `MONGODB_URI` is incorrect.
+
+
+``` npm run seed locally from machine (poowershell w/ admin)
+cd "C:\Users\Admin\Downloads\CCAPDEV-G12-MCO"
+$env:MONGODB_URI="mongodb://admin:DLSU1234%21@ac-qnogoqq-shard-00-00.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-01.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-02.wehikw6.mongodb.net:27017/animo-eats?ssl=true&replicaSet=atlas-14kzgx-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
+npm.cmd run seed
+```
