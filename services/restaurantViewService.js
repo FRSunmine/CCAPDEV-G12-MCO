@@ -42,9 +42,9 @@ function normalizePriceRangeValue(value) {
 
 function formatPriceRangeLabel(value) {
   const labels = {
-    P: "PHP",
-    PP: "PHP PHP",
-    PPP: "PHP PHP PHP",
+    P: "₱",
+    PP: "₱₱",
+    PPP: "₱₱₱",
   };
 
   const normalized = normalizePriceRangeValue(value);
