@@ -24,6 +24,8 @@ const userSchema = new Schema({
   },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true, maxlength: 120 },
   password: { type: String, required: true },
+  passwordResetTokenHash: { type: String, default: null },
+  passwordResetExpiresAt: { type: Date, default: null },
   bio: { type: String, default: "Food lover near DLSU.", maxlength: 280 },
   profilePic: { type: String, default: "/img/default_profile.png", trim: true },
   createdAt: { type: Date, default: Date.now },

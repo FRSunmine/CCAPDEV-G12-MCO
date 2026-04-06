@@ -17,11 +17,17 @@
         <label for="loginPassword">Password</label>
         <input type="password" id="loginPassword" name="password" minlength="8" maxlength="72" required>
       </div>
+      {{#if success}}
+        <div class="success-box">{{success}}</div>
+      {{/if}}
       {{#if error}}
         <div class="error-message">{{error}}</div>
       {{/if}}
       <button type="submit" class="login-button">Login</button>
     </form>
+    <div class="signup-link">
+      Forgot your password? <a href="/auth/forgot-password">Reset it here</a>
+    </div>
     <div class="signup-link">
       Don't have an account? <a href="/register">Sign up here</a>
     </div>

@@ -1,7 +1,17 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { createPendingOwnerRequest, getOwnerRequestRestaurants, validateOwnerRequestSubmission } = require("../services/ownerRequestService");
-const { validateAccountInput } = require("../services/validationService");
+const {
+  validateAccountInput,
+  validateEmail,
+  validatePasswordResetInput,
+} = require("../services/validationService");
+const {
+  buildPasswordResetUrl,
+  findUserByPasswordResetToken,
+  issuePasswordResetToken,
+  shouldExposePasswordResetLinks,
+} = require("../services/passwordResetService");
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -35,9 +45,47 @@ function renderLoginPage(res, { error, identifier = "" }) {
   return res.status(400).render("auth/login", {
     title: "Login",
     error,
+    success: null,
     formData: {
       identifier,
     },
+  });
+}
+
+function renderForgotPasswordPage(res, { error = null, success = null, email = "", resetUrl = null }) {
+  return res.status(error ? 400 : 200).render("auth/forgot-password", {
+    title: "Forgot Password",
+    error,
+    success,
+    resetUrl,
+    formData: {
+      email,
+    },
+  });
+}
+
+function renderResetPasswordPage(res, { token, error = null, isInvalidToken = false }) {
+  return res.status(error ? 400 : 200).render("auth/reset-password", {
+    title: "Reset Password",
+    token,
+    error,
+    isInvalidToken,
+  });
+}
+
+function destroySession(req) {
+  return new Promise((resolve, reject) => {
+    if (!req.session) {
+      return resolve();
+    }
+
+    return req.session.destroy((error) => {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve();
+    });
   });
 }
 
@@ -181,6 +229,103 @@ exports.login = async (req, res, next) => {
 
     await createSession(req, user._id);
     return res.redirect(user.role === "admin" ? "/admin" : `/profile/${user.username}`);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.getForgotPasswordPage = (req, res) => {
+  return renderForgotPasswordPage(res, {});
+};
+
+exports.requestPasswordReset = async (req, res, next) => {
+  try {
+    const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
+    const emailError = validateEmail(email);
+
+    if (emailError) {
+      return renderForgotPasswordPage(res, {
+        error: emailError,
+        email,
+      });
+    }
+
+    const successMessage = "If an account with that email exists, a password reset link is now ready.";
+    const user = await User.findOne({ email });
+    let resetUrl = null;
+
+    if (user) {
+      const { rawToken, expiresAt } = await issuePasswordResetToken(user);
+      resetUrl = buildPasswordResetUrl(req, rawToken);
+      console.log(
+        `[password-reset] ${user.email} -> ${resetUrl} (expires ${expiresAt.toISOString()})`
+      );
+    }
+
+    return renderForgotPasswordPage(res, {
+      success: successMessage,
+      email,
+      resetUrl: user && shouldExposePasswordResetLinks() ? resetUrl : null,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.getResetPasswordPage = async (req, res, next) => {
+  try {
+    const token = req.params.token ? String(req.params.token).trim() : "";
+    const user = await findUserByPasswordResetToken(token);
+
+    if (!user) {
+      return renderResetPasswordPage(res, {
+        token,
+        error: "This password reset link is invalid or has expired. Request a new one to continue.",
+        isInvalidToken: true,
+      });
+    }
+
+    return renderResetPasswordPage(res, {
+      token,
+      isInvalidToken: false,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const token = req.params.token ? String(req.params.token).trim() : "";
+    const user = await findUserByPasswordResetToken(token);
+
+    if (!user) {
+      return renderResetPasswordPage(res, {
+        token,
+        error: "This password reset link is invalid or has expired. Request a new one to continue.",
+        isInvalidToken: true,
+      });
+    }
+
+    const password = req.body.password || "";
+    const confirmPassword = req.body.confirmPassword || "";
+    const validationError = validatePasswordResetInput({ password, confirmPassword });
+
+    if (validationError) {
+      return renderResetPasswordPage(res, {
+        token,
+        error: validationError,
+      });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.passwordResetTokenHash = null;
+    user.passwordResetExpiresAt = null;
+    await user.save();
+
+    await destroySession(req);
+    res.clearCookie("animo.sid");
+    return res.redirect("/login?success=password-reset");
   } catch (error) {
     return next(error);
   }

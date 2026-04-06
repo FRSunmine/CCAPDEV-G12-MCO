@@ -22,6 +22,9 @@ exports.getLoginPage = (req, res) => {
   return res.render("auth/login", {
     title: "Login",
     error: req.query.error || null,
+    success: req.query.success === "password-reset"
+      ? "Your password was updated. Log in with your new password."
+      : null,
     formData: {
       identifier: "",
     },

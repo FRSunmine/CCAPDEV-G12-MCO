@@ -51,6 +51,23 @@ function validatePassword(value) {
   return null;
 }
 
+function validatePasswordResetInput({ password, confirmPassword }) {
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    return passwordError;
+  }
+
+  if (!confirmPassword) {
+    return "Please confirm your new password.";
+  }
+
+  if (password !== confirmPassword) {
+    return "Password confirmation does not match.";
+  }
+
+  return null;
+}
+
 function validateBio(value) {
   if ((value || "").length > 280) {
     return "Bio must be 280 characters or fewer.";
@@ -190,9 +207,11 @@ module.exports = {
   getCritiqueLevel,
   summarizeReviewVotes,
   validateAccountInput,
+  validateEmail,
   validateOwnerRequestDetails,
   validateOwnerResponse,
   validatePassword,
+  validatePasswordResetInput,
   validateReviewInput,
   validateSearchFilters,
 };

@@ -1,12 +1,13 @@
 # Animo Eats
 
-Animo Eats is a full-stack restaurant review web application for the DLSU community. It lets users browse establishments near campus, search restaurants and review text, create accounts, post ratings and reviews, mark reviews as helpful or unhelpful, manage public profiles, and let establishment owners respond to reviews.
+Animo Eats is a full-stack restaurant review web application for the DLSU community. It lets users browse establishments near campus, search restaurants and review text, create accounts, recover forgotten passwords, post ratings and reviews, mark reviews as helpful or unhelpful, manage public profiles, and let establishment owners respond to reviews.
 
 ## Core Features
 
 - Restaurant browsing with database-backed search, cuisine filters, price filters, and minimum rating filters
 - Review keyword search that can surface restaurants based on matching review text
 - User registration and login with hashed passwords
+- One-time password reset links with expiring reset tokens
 - Persistent session-based authentication until logout or browser close
 - Public user profiles with review history and critique level
 - Review CRUD with optional anonymous posting and optional media uploads
@@ -51,6 +52,7 @@ PORT=3000
 NODE_ENV=development
 MONGODB_URI=mongodb://127.0.0.1:27017/animo-eats
 SESSION_SECRET=replace-this-with-a-long-random-secret
+PASSWORD_RESET_EXPOSE_LINKS=false
 ```
 
 Notes:
@@ -58,6 +60,7 @@ Notes:
 - `MONGODB_URI` must point to a running MongoDB instance.
 - `SESSION_SECRET` is required in production.
 - Sessions are stored in MongoDB through `connect-mongo`.
+- Set `PASSWORD_RESET_EXPOSE_LINKS=true` only for demo environments if you want the forgot-password page to reveal the one-time reset link on-screen instead of only logging it on the server.
 
 ## Local Setup
 
@@ -124,6 +127,7 @@ After running `npm run seed`, the app loads:
 ## Validation and Security Notes
 
 - Passwords are hashed with `bcryptjs`.
+- Forgot-password links are random, hashed before storage, and expire automatically.
 - Sessions are stored in MongoDB and use `httpOnly` cookies.
 - Registration, profile editing, reviews, and owner-request forms have front-end and back-end validation.
 - Review uploads accept up to 3 images or 1 video.
@@ -141,6 +145,7 @@ Recommended production steps:
    `NODE_ENV=production`
    `MONGODB_URI=<your Atlas connection string>`
    `SESSION_SECRET=<long random value>`
+   `PASSWORD_RESET_EXPOSE_LINKS=false`
 4. Deploy the app.
 5. Run `npm run seed` once against the production database using the Render shell or a local shell pointed at the production `MONGODB_URI`.
 6. Verify login, review CRUD, review voting, owner requests, owner responses, and the admin dashboard.
@@ -166,10 +171,3 @@ https://ccapdev-g12-mco.onrender.com
 
 - Old prototype files inside `public/archived_pages/` are not part of the current MVC app.
 - If you see `ECONNREFUSED 127.0.0.1:27017`, MongoDB is not running or `MONGODB_URI` is incorrect.
-
-
-``` npm run seed locally from machine (poowershell w/ admin)
-cd "C:\Users\Admin\Downloads\CCAPDEV-G12-MCO"
-$env:MONGODB_URI="mongodb://admin:DLSU1234%21@ac-qnogoqq-shard-00-00.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-01.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-02.wehikw6.mongodb.net:27017/animo-eats?ssl=true&replicaSet=atlas-14kzgx-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
-npm.cmd run seed
-```
