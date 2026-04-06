@@ -132,8 +132,10 @@ async function getTopReviewSummaries(restaurantIds, currentUserId) {
     const mappedReview = mapRestaurantReview(review, currentUserId);
     topReviewByRestaurant.set(restaurantKey, {
       excerpt: mappedReview.reviewExcerpt,
+      snippet: mappedReview.reviewExcerpt,
       authorName: mappedReview.authorDisplayName,
       voteScore: mappedReview.voteScore,
+      helpfulCount: mappedReview.voteScore,
       title: mappedReview.displayTitle,
     });
   });

@@ -179,7 +179,6 @@ exports.create = async (req, res, next) => {
       return redirectToRestaurant(res, restaurant.restaurantId, {
         feedbackType: "error",
         feedbackScope: "review",
-        openReviewId: existingReview._id,
       });
     }
 
