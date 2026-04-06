@@ -1,18 +1,23 @@
 # Animo Eats
 
-Animo Eats is a full-stack restaurant review web application for the DLSU community. It lets users browse establishments near campus, search restaurants and review text, create accounts, post ratings and reviews, mark reviews as helpful or unhelpful, manage public profiles, and let establishment owners respond to reviews.
+Animo Eats is a full-stack restaurant discovery and review web application made for the DLSU community. The project helps users explore establishments near campus, search restaurants and reviews, post ratings and feedback, manage public profiles, and let verified owners respond to customer reviews.
 
-## Core Features
+Live app: https://ccapdev-g12-mco.onrender.com
 
-- Restaurant browsing with database-backed search, cuisine filters, price filters, and minimum rating filters
-- Review keyword search that can surface restaurants based on matching review text
-- User registration and login with hashed passwords
-- Persistent session-based authentication until logout or browser close
-- Public user profiles with review history and critique level
-- Review CRUD with optional anonymous posting and optional media uploads
-- Helpful and unhelpful review feedback
-- Establishment owner request workflow and public owner responses
-- Admin dashboard for approving owner requests and assigning restaurant owners
+## Main Features
+
+- Restaurant browsing with database-backed content
+- Search using restaurant details and review keywords
+- Filters for cuisine, price range, and minimum rating
+- User registration and login
+- Session-based authentication
+- Public user profiles
+- Review create, edit, and delete
+- Rating-only and anonymous reviews
+- Helpful and unhelpful review voting
+- Owner request workflow
+- Owner responses to reviews
+- Admin dashboard for owner assignment and request moderation
 
 ## Tech Stack
 
@@ -31,20 +36,33 @@ Animo Eats is a full-stack restaurant review web application for the DLSU commun
 
 ## Project Structure
 
-- `server.js` sets up the Express app, sessions, middleware, and route mounting.
+- `server.js` sets up the Express app, middleware, sessions, and route mounting.
 - `config/` contains the MongoDB connection setup.
 - `models/` contains the Mongoose schemas.
 - `controllers/` contains the route handlers.
 - `routes/` contains the Express route definitions.
-- `middleware/` contains reusable Express middleware.
-- `services/` contains shared validation, page-mapping, flash-message, and metadata helpers.
-- `views/` contains Handlebars templates grouped by feature area.
+- `middleware/` contains reusable middleware such as authentication guards.
+- `services/` contains shared logic for validation, view-model preparation, flash feedback, and utility helpers.
+- `views/` contains the Handlebars templates.
 - `public/` contains static assets.
-- `seeds/` contains the database seeding script.
+- `seeds/` contains the database seed script.
+
+## Prerequisites
+
+Before running the project locally, make sure you have:
+
+- Node.js
+- npm
+- a working MongoDB connection
+
+You may use either:
+
+- a local MongoDB server, or
+- MongoDB Atlas
 
 ## Environment Variables
 
-Create a `.env` file from `.env.example` or set these values directly in your shell:
+Create a `.env` file in the project root and add:
 
 ```env
 PORT=3000
@@ -53,21 +71,40 @@ MONGODB_URI=mongodb://127.0.0.1:27017/animo-eats
 SESSION_SECRET=replace-this-with-a-long-random-secret
 ```
 
-Notes:
+### Notes
 
-- `MONGODB_URI` must point to a running MongoDB instance.
-- `SESSION_SECRET` is required in production.
-- Sessions are stored in MongoDB through `connect-mongo`.
+- `MONGODB_URI` must point to a running MongoDB database.
+- `SESSION_SECRET` is used to sign and secure user sessions.
+- In production, sessions are stored in MongoDB using `connect-mongo`.
 
-## Local Setup
+## Running The Project Locally
 
-1. Install dependencies.
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd CCAPDEV-G12-MCO
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Start MongoDB locally.
+If PowerShell blocks `npm`, use:
+
+```powershell
+npm.cmd install
+```
+
+### 3. Configure `.env`
+
+Create the `.env` file using the values listed above.
+
+### 4. Start MongoDB
+
+If you are using local MongoDB:
 
 Linux:
 
@@ -81,25 +118,35 @@ Windows PowerShell:
 net start MongoDB
 ```
 
-3. Seed the database.
+If local MongoDB is not available, use a MongoDB Atlas connection string in `MONGODB_URI`.
+
+### 5. Seed the database
 
 ```bash
 npm run seed
 ```
 
-4. Start the app.
+If PowerShell blocks `npm`, use:
+
+```powershell
+npm.cmd run seed
+```
+
+### 6. Start the app
 
 ```bash
 npm start
 ```
 
-5. Open:
+### 7. Open the app
 
 ```text
 http://localhost:3000
 ```
 
-## Sample Seeded Accounts
+## Sample Accounts
+
+After seeding, you can use these accounts:
 
 - Reviewer email: `animonstah123@example.com`
 - Reviewer password: `password123`
@@ -114,42 +161,92 @@ The login form accepts either email or username.
 
 ## Seed Data Summary
 
-After running `npm run seed`, the app loads:
+Running `npm run seed` loads:
 
 - 8 restaurants
-- 8 users including reviewer, owner, and admin accounts
+- 8 users
 - 8 reviews
 - 5 owner requests
 
-## Validation and Security Notes
+The seeded data also includes:
 
-- Passwords are hashed with `bcryptjs`.
-- Sessions are stored in MongoDB and use `httpOnly` cookies.
-- Registration, profile editing, reviews, and owner-request forms have front-end and back-end validation.
-- Review uploads accept up to 3 images or 1 video.
-- Anonymous reviews hide the author identity on the restaurant page.
+- anonymous reviews
+- rating-only reviews
+- helpful and unhelpful vote samples
+- owner responses
+- owner and admin accounts for moderation testing
 
-## Deployment Guide
+## Useful Routes
 
-This repository includes `.env.example` and `render.yaml` for a Render deployment.
+- `/` welcome page
+- `/restaurants` search and restaurant list
+- `/restaurants/:restaurantId` restaurant detail page
+- `/login` login page
+- `/register` registration page
+- `/profile/:username` public user profile
+- `/admin-support` owner request page
+- `/admin` admin dashboard
+- `/about` About page with package and library listing
 
-Recommended production steps:
+## Deployment Notes
 
-1. Create a MongoDB Atlas database.
-2. Create a Render Web Service from this repository.
-3. Set:
-   `NODE_ENV=production`
-   `MONGODB_URI=<your Atlas connection string>`
-   `SESSION_SECRET=<long random value>`
-4. Deploy the app.
-5. Run `npm run seed` once against the production database using the Render shell or a local shell pointed at the production `MONGODB_URI`.
-6. Verify login, review CRUD, review voting, owner requests, owner responses, and the admin dashboard.
-7. Add the final live URL below before submission.
+The current deployed version is hosted on Render:
 
-Deployment URL:
+https://ccapdev-g12-mco.onrender.com
+
+Typical production environment values:
+
+```env
+NODE_ENV=production
+MONGODB_URI=<your-production-mongodb-uri>
+SESSION_SECRET=<long-random-secret>
+```
+
+## Extra Notes
+
+- The About page lists the npm packages and third-party libraries used by the project.
+- Passwords are hashed using `bcryptjs`.
+- Review uploads are handled through `multer`.
+- Sessions persist until logout or browser close.
+- Old prototype files inside `public/archived_pages/` are not part of the active MVC application.
+- The seed script resets sample data, so do not run it on a database whose current data you want to preserve.
+
+## Troubleshooting
+
+### MongoDB is not connecting
+
+If you see:
 
 ```text
-https://ccapdev-g12-mco.onrender.com
+ECONNREFUSED 127.0.0.1:27017
+```
+
+then MongoDB is either not running or `MONGODB_URI` is incorrect.
+
+### PowerShell blocks npm
+
+Use:
+
+```powershell
+npm.cmd install
+npm.cmd run seed
+npm.cmd start
+```
+
+### Render environment variable formatting
+
+When setting environment variables in Render, use only the raw value.
+
+Correct:
+
+```text
+mongodb://...
+```
+
+Wrong:
+
+```text
+MONGODB_URI=mongodb://...
 ```
 
 ## Submission Checklist
@@ -157,19 +254,10 @@ https://ccapdev-g12-mco.onrender.com
 - `npm install`
 - `npm run seed`
 - `npm start`
-- Verify `/about` lists all packages and libraries used
-- Verify `/admin` with the seeded admin account
-- Verify owner response flow with the seeded owner account
-- Replace the deployment placeholder in this README with the final live URL
-
-## Notes
-
-- Old prototype files inside `public/archived_pages/` are not part of the current MVC app.
-- If you see `ECONNREFUSED 127.0.0.1:27017`, MongoDB is not running or `MONGODB_URI` is incorrect.
-
-
-``` npm run seed locally from machine (poowershell w/ admin)
-cd "C:\Users\Admin\Downloads\CCAPDEV-G12-MCO"
-$env:MONGODB_URI="mongodb://admin:DLSU1234%21@ac-qnogoqq-shard-00-00.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-01.wehikw6.mongodb.net:27017,ac-qnogoqq-shard-00-02.wehikw6.mongodb.net:27017/animo-eats?ssl=true&replicaSet=atlas-14kzgx-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
-npm.cmd run seed
-```
+- verify `/about`
+- verify `/restaurants`
+- verify review CRUD
+- verify review voting
+- verify owner request and owner response flow
+- verify `/admin`
+- verify the live deployment URL
