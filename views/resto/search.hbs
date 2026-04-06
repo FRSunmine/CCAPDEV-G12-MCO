@@ -6,10 +6,17 @@
     <div class="page-container hero-row hero-row-single">
       <div class="hero-text">
         <h1>Discover restaurants near DLSU!</h1>
-        <p class="sub">Reviews and simple guides to local dining spots.</p>
+        <p class="sub">Search matches restaurant names, locations, descriptions, and review text from the community.</p>
 
         <form class="search-form" role="search" method="GET" action="/restaurants">
-          <input type="search" id="search-input" name="q" value="{{filters.q}}" placeholder="Search by name or location" />
+          <input
+            type="search"
+            id="search-input"
+            name="q"
+            value="{{filters.q}}"
+            placeholder="Search by restaurant or review keyword"
+            maxlength="80"
+          />
           <button type="submit">Search</button>
         </form>
       </div>
@@ -21,19 +28,35 @@
       <h3>Filters</h3>
       <form method="GET" action="/restaurants">
         <input type="hidden" name="q" value="{{filters.q}}">
+
         <legend>Category</legend>
         <select name="cuisine" id="cuisine-filter">
-          <option value="">All</option>
+          <option value="">All cuisines</option>
           {{#each cuisines}}
             <option value="{{this}}" {{#if (eq ../filters.cuisine this)}}selected{{/if}}>{{this}}</option>
           {{/each}}
-        </select><br>
+        </select>
+
+        <div class="form-group">
+          <label for="minRating">Minimum Rating</label>
+          <select id="minRating" name="minRating">
+            <option value="">Any rating</option>
+            <option value="5" {{#if (eq filters.minRating "5")}}selected{{/if}}>5 stars</option>
+            <option value="4" {{#if (eq filters.minRating "4")}}selected{{/if}}>4 stars and up</option>
+            <option value="3" {{#if (eq filters.minRating "3")}}selected{{/if}}>3 stars and up</option>
+            <option value="2" {{#if (eq filters.minRating "2")}}selected{{/if}}>2 stars and up</option>
+            <option value="1" {{#if (eq filters.minRating "1")}}selected{{/if}}>1 star and up</option>
+          </select>
+        </div>
 
         <fieldset class="price-filter">
           <legend>Price</legend>
-          <label><input type="checkbox" name="price" value="₱" {{#if (includes filters.prices "₱")}}checked{{/if}}><span>₱</span></label>
-          <label><input type="checkbox" name="price" value="₱₱" {{#if (includes filters.prices "₱₱")}}checked{{/if}}><span>₱₱</span></label>
-          <label><input type="checkbox" name="price" value="₱₱₱" {{#if (includes filters.prices "₱₱₱")}}checked{{/if}}><span>₱₱₱</span></label>
+          {{#each priceRanges}}
+            <label>
+              <input type="checkbox" name="price" value="{{this.value}}" {{#if (includes ../filters.prices this.value)}}checked{{/if}}>
+              <span>{{this.label}}</span>
+            </label>
+          {{/each}}
         </fieldset>
 
         <div class="filter-actions">
@@ -45,26 +68,34 @@
 
     <section class="results">
       <h2>Restaurant Results</h2>
+      {{#if errorMessage}}
+        <div class="error-box">{{errorMessage}}</div>
+      {{/if}}
+      <p class="utility-copy">{{resultCount}} result{{#unless (eq resultCount 1)}}s{{/unless}} found.</p>
+
       {{#if hasResults}}
         <div class="cards-grid" id="cards-grid">
           {{#each restaurants}}
-          <article class="card" data-restaurant='{{jsonData}}'>
-            <div class="card-thumb">
-              <img src="{{imageSrc}}" alt="{{name}}">
-            </div>
-            <div class="card-body">
-              <h3 class="title">
-                <a href="{{restaurantPath}}">{{name}}</a>
-              </h3>
-              <p class="meta">{{location}} <br>{{priceRange}} • {{rating}}</p>
-              <div class="cuisine-list">
-                {{#each cuisineTypes}}
-                  <span class="cuisine-btn">{{this}}</span>
-                {{/each}}
+            <article class="card" data-restaurant='{{jsonData}}'>
+              <div class="card-thumb">
+                <img src="{{imageSrc}}" alt="{{name}}">
               </div>
-              <p class="excerpt">{{previewDescription}}</p>
-            </div>
-          </article>
+              <div class="card-body">
+                <h3 class="title">
+                  <a href="{{restaurantPath}}">{{name}}</a>
+                </h3>
+                <p class="meta">{{location}} <br>{{displayPriceRange}} | {{rating}} stars</p>
+                <div class="cuisine-list">
+                  {{#each cuisineTypes}}
+                    <span class="cuisine-btn">{{this}}</span>
+                  {{/each}}
+                </div>
+                <p class="excerpt">{{previewDescription}}</p>
+                {{#if topReview}}
+                  <p class="utility-copy search-top-review">Top review: {{topReview.title}}</p>
+                {{/if}}
+              </div>
+            </article>
           {{/each}}
         </div>
       {{else}}
@@ -72,11 +103,39 @@
           <p>No restaurants matched your search yet. Try clearing the filters and searching again.</p>
         </div>
       {{/if}}
+
+      {{#if hasMatchingReviews}}
+        <section class="admin-section">
+          <div class="admin-section-heading">
+            <h2>Matching Reviews</h2>
+            <p class="utility-copy">These review snippets matched your current search keywords.</p>
+          </div>
+          <div class="admin-grid">
+            {{#each matchingReviews}}
+              <article class="admin-card">
+                <div class="admin-card-head">
+                  <h3><a class="inline-link" href="{{restaurantPath}}">{{restaurant.name}}</a></h3>
+                  <span class="status-chip status-pending">{{rating}}/5</span>
+                </div>
+                <p class="meta">
+                  By
+                  {{#if authorProfilePath}}
+                    <a class="inline-link" href="{{authorProfilePath}}">{{authorName}}</a>
+                  {{else}}
+                    {{authorName}}
+                  {{/if}}
+                </p>
+                <p><strong>{{title}}</strong></p>
+                <p>{{snippet}}</p>
+              </article>
+            {{/each}}
+          </div>
+        </section>
+      {{/if}}
     </section>
   </section>
 </main>
 
-<!-- Inset popup markup -->
 <div id="inset-backdrop" class="inset-backdrop"></div>
 <div id="restaurant-inset" class="inset">
   <button id="inset-close" class="inset-close">&times;</button>
@@ -89,64 +148,80 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("cards-grid");
+    if (!grid) {
+      return;
+    }
+
     const inset = document.getElementById("restaurant-inset");
     const insetInfo = inset.querySelector(".inset-info");
     const insetClose = document.getElementById("inset-close");
     const backdrop = document.getElementById("inset-backdrop");
     let currentMap = null;
 
-    grid.addEventListener("click", e => {
-      const card = e.target.closest(".card");
-      if (!card) return;
-      if (e.target.tagName.toLowerCase() === "a") return;
+    grid.addEventListener("click", (event) => {
+      const card = event.target.closest(".card");
+      if (!card || event.target.tagName.toLowerCase() === "a") {
+        return;
+      }
 
       const restaurant = JSON.parse(card.dataset.restaurant);
 
       insetInfo.innerHTML = `
-        <h2>${restaurant.name}</h2>
-        <p><strong>Location:</strong> ${restaurant.location}</p>
-        <p><strong>Price Range:</strong> ${restaurant.priceRange}</p>
-        <p><strong>Rating:</strong> ${restaurant.rating}</p>
-        <p>${restaurant.previewDescription}</p><br>
+        <h2 class="inset-name"></h2>
+        <p><strong>Location:</strong> <span class="inset-location"></span></p>
+        <p><strong>Price Range:</strong> <span class="inset-price"></span></p>
+        <p><strong>Rating:</strong> <span class="inset-rating"></span></p>
+        <p class="inset-description"></p>
+        <br>
         <p><strong>Top Review:</strong></p>
-        <div class="top-review">Loading top review...</div>
+        <div class="top-review">
+          <strong class="top-review-title"></strong>
+          <p class="top-review-body"></p>
+          <p class="top-review-meta"></p>
+        </div>
       `;
+
+      insetInfo.querySelector(".inset-name").textContent = restaurant.name;
+      insetInfo.querySelector(".inset-location").textContent = restaurant.location;
+      insetInfo.querySelector(".inset-price").textContent = restaurant.priceRange;
+      insetInfo.querySelector(".inset-rating").textContent = `${restaurant.rating}/5`;
+      insetInfo.querySelector(".inset-description").textContent = restaurant.previewDescription;
+
+      const topReviewTitle = insetInfo.querySelector(".top-review-title");
+      const topReviewBody = insetInfo.querySelector(".top-review-body");
+      const topReviewMeta = insetInfo.querySelector(".top-review-meta");
+
+      if (restaurant.topReview) {
+        topReviewTitle.textContent = restaurant.topReview.title;
+        topReviewBody.textContent = restaurant.topReview.excerpt;
+        topReviewMeta.textContent = `By ${restaurant.topReview.authorName} | Score ${restaurant.topReview.voteScore}`;
+      } else {
+        topReviewTitle.textContent = "No reviews yet.";
+        topReviewBody.textContent = "Be the first to leave a review for this restaurant.";
+        topReviewMeta.textContent = "";
+      }
 
       inset.classList.add("open");
       backdrop.style.display = "block";
 
-      if (currentMap) { currentMap.remove(); currentMap = null; }
+      if (currentMap) {
+        currentMap.remove();
+        currentMap = null;
+      }
+
       currentMap = L.map("inset-map").setView([restaurant.coordinates.lat, restaurant.coordinates.lng], 17);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
+        attribution: "&copy; OpenStreetMap contributors",
       }).addTo(currentMap);
       L.marker([restaurant.coordinates.lat, restaurant.coordinates.lng]).addTo(currentMap);
       setTimeout(() => currentMap.invalidateSize(), 300);
-
-      fetch(`/data/${restaurant.restaurantId}_reviews.json`)
-        .then(res => res.ok ? res.json() : [])
-        .then(reviews => {
-          const reviewDiv = insetInfo.querySelector(".top-review");
-          if (Array.isArray(reviews) && reviews.length > 0) {
-            const topReview = reviews.reduce((best, current) =>
-              current.rating > (best?.rating || 0) ? current : best, null);
-            const truncated = topReview.reviewMessage.length > 120
-              ? topReview.reviewMessage.slice(0, 120) + "..."
-              : topReview.reviewMessage;
-            reviewDiv.textContent = `"${truncated}" — ${topReview.user}`;
-          } else {
-            reviewDiv.textContent = "No reviews yet.";
-          }
-        })
-        .catch(() => {
-          insetInfo.querySelector(".top-review").textContent = "No reviews yet.";
-        });
     });
 
     insetClose.addEventListener("click", () => {
       inset.classList.remove("open");
       backdrop.style.display = "none";
     });
+
     backdrop.addEventListener("click", () => {
       inset.classList.remove("open");
       backdrop.style.display = "none";

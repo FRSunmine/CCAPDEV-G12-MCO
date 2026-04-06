@@ -3,21 +3,25 @@
     <div class="page-container hero-row hero-row-single">
       <div class="hero-text">
         <h1>{{profile.username}}</h1>
-        <p class="sub">Public profile and reviews.</p>
+        <p class="sub">Public profile, review history, and contribution stats.</p>
       </div>
     </div>
   </section>
 
   <section class="layout page-container">
     <aside class="profile-sidebar">
-      <h3>Profile</h3>
+      <h3>Profile Summary</h3>
       <p>{{profile.handle}}</p>
       <p>Role: {{profile.role}}</p>
       <p>Member since {{formatDate profile.createdAt}}</p>
-      <p>{{reviewsCount}} review{{#unless (eq reviewsCount 1)}}s{{/unless}} shared with the community.</p>
-      <p>{{#if isOwnProfile}}You can edit or delete your reviews below.{{else}}This is a public profile.{{/if}}</p>
+      <p>Critique level: <strong>{{critiqueLevel.label}}</strong></p>
+      <p class="utility-copy">{{critiqueLevel.description}}</p>
+      <p>Helpful score: {{helpfulScore}}</p>
+      <p>Helpful votes: {{helpfulVotesReceived}}</p>
+      <p>Unhelpful votes: {{unhelpfulVotesReceived}}</p>
+      <p>Anonymous reviews: {{anonymousReviewsCount}}</p>
       {{#if (eq profile.role "owner")}}
-        <p>Manages {{managedRestaurantsCount}} restaurant{{#unless (eq managedRestaurantsCount 1)}}s{{/unless}}.</p>
+        <p>Managed restaurants: {{managedRestaurantsCount}}</p>
       {{/if}}
       {{#if isOwnProfile}}
         <a class="button-link sidebar-button" href="/edit-profile">Edit Profile</a>
@@ -26,10 +30,18 @@
     </aside>
 
     <section class="results">
+      {{#if feedbackMessage}}
+        {{#if (eq feedbackType "success")}}
+          <div class="success-box">{{feedbackMessage}}</div>
+        {{else}}
+          <div class="error-box">{{feedbackMessage}}</div>
+        {{/if}}
+      {{/if}}
+
       {{#if isOwnProfile}}
         {{#if pendingOwnerRequests}}
           <section class="status-panel pending-panel">
-            <h2>Owner Requests Pending</h2>
+            <h2>Pending Owner Requests</h2>
             {{#each pendingOwnerRequests}}
               <p>Your request for <a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a> is waiting for admin approval.</p>
             {{/each}}
@@ -38,7 +50,7 @@
 
         {{#if rejectedOwnerRequests}}
           <section class="status-panel rejected-panel">
-            <h2>Owner Requests Rejected</h2>
+            <h2>Rejected Owner Requests</h2>
             {{#each rejectedOwnerRequests}}
               <p>Your request for <a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a> was rejected. You can submit a new request if your details change.</p>
             {{/each}}
@@ -48,14 +60,19 @@
 
       <div class="profile-header card profile-view-card">
         <div class="card-thumb profile-pic">
-          <img src="{{profile.profilePic}}" alt="{{profile.username}}" loading="lazy"
-              onerror="this.onerror=null;this.src='/img/default_profile.png'">
+          <img
+            src="{{profile.profilePic}}"
+            alt="{{profile.username}}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='/img/default_profile.png';"
+          >
         </div>
         <div class="card-body">
           <h1>{{profile.username}}</h1>
           <p class="handle">{{profile.handle}}</p>
           <p class="bio">{{profile.bio}}</p>
           <p class="meta">Reviews: {{reviewsCount}}</p>
+          <p class="meta">Critique level: {{critiqueLevel.label}}</p>
           {{#if (eq profile.role "owner")}}
             <p class="meta">Owner account</p>
           {{/if}}
@@ -83,18 +100,28 @@
           {{#each reviews}}
             <article class="review-card">
               <div class="review-profile">
-                <img class="profile-pic" src="{{this.restaurant.imageSrc}}" alt="{{this.restaurant.name}}"
-                    onerror="this.onerror=null;this.src='/img/default_profile.png';">
+                <img
+                  class="profile-pic"
+                  src="{{this.restaurant.imageSrc}}"
+                  alt="{{this.restaurant.name}}"
+                  onerror="this.onerror=null;this.src='/img/default_profile.png';"
+                >
                 <div class="review-meta">
                   <p class="username"><a class="inline-link" href="{{this.restaurantPath}}">{{this.restaurant.name}}</a></p>
                   <p class="date">{{formatDate this.createdAt}}</p>
+                  {{#if this.isEdited}}
+                    <p class="date">Edited {{formatDate this.updatedAt}}</p>
+                  {{/if}}
                 </div>
               </div>
 
               <div class="review-message">
                 <h3 class="profile-review-title">{{this.title}}</h3>
                 <p class="rating">Rating: <strong>{{this.rating}}/5</strong></p>
-                <p class="msg">{{this.body}}</p>
+                {{#if this.isAnonymous}}
+                  <p class="utility-copy">Posted anonymously on the restaurant page.</p>
+                {{/if}}
+                <p class="msg">{{#if this.body}}{{this.body}}{{else}}This review only includes a rating.{{/if}}</p>
               </div>
 
               {{#if this.canManage}}
@@ -102,11 +129,12 @@
                   Edit / Delete
                 </button>
 
-                <div id="manage-{{this._id}}" class="review-manage-box">
+                <div id="manage-{{this._id}}" class="review-manage-box {{#if this.isManageOpen}}open{{/if}}">
                   <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/edit">
+                    <input type="hidden" name="returnTo" value="/profile/{{../profile.username}}">
                     <div class="form-group">
                       <label for="title-{{this._id}}">Title</label>
-                      <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" required>
+                      <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" maxlength="80" placeholder="Optional short headline">
                     </div>
                     <div class="form-group">
                       <label for="rating-{{this._id}}">Rating</label>
@@ -120,12 +148,17 @@
                     </div>
                     <div class="form-group">
                       <label for="body-{{this._id}}">Review</label>
-                      <textarea id="body-{{this._id}}" name="body" rows="3" required>{{this.body}}</textarea>
+                      <textarea id="body-{{this._id}}" name="body" rows="3" maxlength="1000" placeholder="Optional written review">{{this.body}}</textarea>
                     </div>
+                    <label class="checkbox-row" for="profile-anonymous-{{this._id}}">
+                      <input type="checkbox" id="profile-anonymous-{{this._id}}" name="isAnonymous" {{#if this.isAnonymous}}checked{{/if}}>
+                      <span>Keep this review anonymous</span>
+                    </label>
                     <button type="submit" class="login-button">Save Changes</button>
                   </form>
 
                   <form method="POST" action="/reviews/{{this._id}}/delete">
+                    <input type="hidden" name="returnTo" value="/profile/{{../profile.username}}">
                     <button type="submit" class="review-delete-button">Delete Review</button>
                   </form>
                 </div>

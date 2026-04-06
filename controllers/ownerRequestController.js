@@ -14,8 +14,14 @@ exports.create = async (req, res, next) => {
     });
 
     if (createdRequest.error) {
-      const selectedRestaurantId = restaurantId || "";
-      return res.redirect(`/admin-support?restaurantId=${selectedRestaurantId}&error=${encodeURIComponent(createdRequest.error)}`);
+      const params = new URLSearchParams();
+      if (restaurantId) {
+        params.set("restaurantId", restaurantId);
+      }
+      params.set("error", createdRequest.error);
+      params.set("contactDetails", contactDetails);
+      params.set("message", message);
+      return res.redirect(`/admin-support?${params.toString()}`);
     }
 
     return res.redirect(`/admin-support?restaurantId=${createdRequest.restaurant.restaurantId}&success=owner-request`);

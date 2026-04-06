@@ -6,20 +6,20 @@
     "location": "EGI Taft Tower",
     "cuisine_type": ["Korean", "Chicken", "Fast Food"],
     "rating": 4.6,
-    "price_range": "₱",
+    "price_range": "P",
     "preview_description": "Boneless Happiness!",
     "image_src": "/img/restaurants/24chicken-logo.jpg",
     "coordinates": { "lat": 14.565900396150434, "lng": 120.99283646093451 }
   },
   {
-    "name": "Prelude Cafe & Restuarant",
+    "name": "Prelude Cafe and Restaurant",
     "id": "rest0002",
     "reviews_url": "/restaurants/rest0002",
     "location": "Fidel A. Reyes St.",
     "cuisine_type": ["Coffee Shop", "Casual"],
     "rating": 4.7,
-    "price_range": "₱₱",
-    "preview_description": "Quality Food & Specialty Coffee!",
+    "price_range": "PP",
+    "preview_description": "Quality food and specialty coffee.",
     "image_src": "/img/restaurants/prelude-logo.jpg",
     "coordinates": { "lat": 14.566252584273098, "lng": 120.99273773595526 }
   },
@@ -30,32 +30,32 @@
     "location": "Dagonoy St.",
     "cuisine_type": ["Filipino"],
     "rating": 4.4,
-    "price_range": "₱",
+    "price_range": "P",
     "preview_description": "Tinuhog ni Benny Barbecue House",
     "image_src": "/img/restaurants/tinuhog-logo.png",
     "coordinates": { "lat": 14.566012127987763, "lng": 120.99422356024654 }
   },
   {
-    "name": "Royaltea皇茶",
+    "name": "Royaltea",
     "id": "rest0004",
     "reviews_url": "/restaurants/rest0004",
     "location": "WH Taft Residences",
-    "cuisine_type": ["Chinese", "Milktea"],
+    "cuisine_type": ["Chinese", "Milk Tea"],
     "rating": 4.2,
-    "price_range": "₱₱",
-    "preview_description": "ROYALTEA皇茶 is a premium cheese tea concept from China that has pioneered the cheese cap trend.",
+    "price_range": "PP",
+    "preview_description": "Premium cheese tea drinks with classic milk tea options.",
     "image_src": "/img/restaurants/royaltea-logo.jpg",
     "coordinates": { "lat": 14.565929705005827, "lng": 120.99350137547356 }
   },
-    {
+  {
     "name": "Zark's Burger",
     "id": "rest0005",
     "reviews_url": "/restaurants/rest0005",
     "location": "Burgundy Transpacific Place",
     "cuisine_type": ["Fast Food", "Burger", "Chicken", "Casual"],
     "rating": 4.6,
-    "price_range": "₱₱",
-    "preview_description": "IT'S FRESH. IT'S HUGE. IT'S GREAT",
+    "price_range": "PP",
+    "preview_description": "Fresh and oversized burgers for quick campus meals.",
     "image_src": "/img/restaurants/zarks-logo.png",
     "coordinates": { "lat": 14.565208148336865, "lng": 120.99425305585949 }
   },
@@ -66,10 +66,10 @@
     "location": "D' University Place",
     "cuisine_type": ["Fast Food", "Burger", "Chicken"],
     "rating": 1.7,
-    "price_range": "₱₱",
-    "preview_description": "UNLIMITED FRIED CHICKEN WINGS & SMASH BURGER",
+    "price_range": "PP",
+    "preview_description": "Unlimited fried chicken wings and smash burgers.",
     "image_src": "/img/restaurants/foodmob-logo.jpg",
-    "coordinates": { "lat": 14.565607752987855, "lng": 120.99469418362544}
+    "coordinates": { "lat": 14.565607752987855, "lng": 120.99469418362544 }
   },
   {
     "name": "El Poco Cantina",
@@ -78,8 +78,8 @@
     "location": "Estrada St.",
     "cuisine_type": ["Mexican"],
     "rating": 4.5,
-    "price_range": "₱",
-    "preview_description": "Birria Taco Specialist",
+    "price_range": "P",
+    "preview_description": "Birria taco specialist near campus.",
     "image_src": "/img/restaurants/elpoco-logo.jpg",
     "coordinates": { "lat": 14.565317236792477, "lng": 120.99624046145048 }
   },
@@ -90,8 +90,8 @@
     "location": "Leon Guinto St.",
     "cuisine_type": ["Fast Food", "Coffee Shop", "Burger", "Chicken"],
     "rating": 4.9,
-    "price_range": "₱₱",
-    "preview_description": "Fast food, café, and a marketing beast. We serve food and strategy",
+    "price_range": "PP",
+    "preview_description": "Fast food and cafe favorites served close to campus.",
     "image_src": "/img/restaurants/ontheway-logo.jpg",
     "coordinates": { "lat": 14.56323374922891, "lng": 120.99584689944585 }
   }

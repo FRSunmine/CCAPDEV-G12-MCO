@@ -80,7 +80,7 @@ function resolveProfilePic(profilePicPath) {
       restaurantId: restaurant.id,
       name: restaurant.name,
       location: restaurant.location,
-      owner: ["rest0001", "rest0004"].includes(restaurant.id) ? primaryOwner._id : null,
+      owner: ["rest0001", "rest0004", "rest0007"].includes(restaurant.id) ? primaryOwner._id : null,
       cuisineTypes: restaurant.cuisine_type,
       rating: restaurant.rating,
       reviewCount: 0,
@@ -108,11 +108,86 @@ function resolveProfilePic(profilePicPath) {
         continue;
       }
 
+      const votes = [];
+      let helpfulCount = review.howHelpfulCount || 0;
+      let isAnonymous = false;
+      let ownerResponse = {
+        body: "",
+        respondedAt: null,
+        updatedAt: null,
+      };
+
+      if (restaurant.restaurantId === "rest0001" && review.reviewID === "rev00001") {
+        votes.push(
+          { user: usersByUsername.get("Tyler")._id, direction: "up" },
+          { user: usersByUsername.get("NotoMaki")._id, direction: "up" },
+          { user: usersByUsername.get("Artrytease")._id, direction: "up" }
+        );
+        helpfulCount = 3;
+        isAnonymous = true;
+        ownerResponse = {
+          body: "Thanks for the feedback. We are glad the Jack Daniels flavor stood out.",
+          respondedAt: new Date("2026-02-14T09:30:00.000Z"),
+          updatedAt: new Date("2026-02-14T09:30:00.000Z"),
+        };
+      }
+
+      if (restaurant.restaurantId === "rest0001" && review.reviewID === "rev00002") {
+        votes.push(
+          { user: usersByUsername.get("Tyler")._id, direction: "down" }
+        );
+        helpfulCount = -1;
+        ownerResponse = {
+          body: "Thanks for pointing this out. We are reviewing our serving sizes and pricing balance.",
+          respondedAt: new Date("2026-02-15T08:00:00.000Z"),
+          updatedAt: new Date("2026-02-15T08:00:00.000Z"),
+        };
+      }
+
+      if (restaurant.restaurantId === "rest0001" && review.reviewID === "rev00003") {
+        ownerResponse = {
+          body: "We appreciate the honest note. We are coordinating with the branch team to improve peak-hour service speed.",
+          respondedAt: new Date("2026-02-15T09:00:00.000Z"),
+          updatedAt: new Date("2026-02-15T09:00:00.000Z"),
+        };
+      }
+
+      if (restaurant.restaurantId === "rest0003" && review.reviewID === "rev00001") {
+        votes.push(
+          { user: usersByUsername.get("AniMonstah123")._id, direction: "up" },
+          { user: usersByUsername.get("Tyler")._id, direction: "up" }
+        );
+        helpfulCount = 2;
+      }
+
+      if (restaurant.restaurantId === "rest0004" && review.reviewID === "rev00001") {
+        votes.push(
+          { user: usersByUsername.get("AniMonstah123")._id, direction: "up" }
+        );
+        helpfulCount = 1;
+        ownerResponse = {
+          body: "Appreciate the visit. We are working on keeping sweetness levels consistent.",
+          respondedAt: new Date("2026-02-15T10:15:00.000Z"),
+          updatedAt: new Date("2026-02-15T10:15:00.000Z"),
+        };
+      }
+
+      if (restaurant.restaurantId === "rest0006" && review.reviewID === "rev00001") {
+        votes.push(
+          { user: usersByUsername.get("AniMonstah123")._id, direction: "down" },
+          { user: usersByUsername.get("Tyler")._id, direction: "down" }
+        );
+        helpfulCount = -2;
+      }
+
       reviewDocs.push({
         title: review.reviewTitle,
         body: review.reviewMessage,
         rating: review.rating,
-        helpfulCount: review.howHelpfulCount || 0,
+        helpfulCount,
+        votes,
+        isAnonymous,
+        ownerResponse,
         author: author._id,
         restaurant: restaurant._id,
         createdAt: new Date(review.createdAt),
@@ -120,6 +195,26 @@ function resolveProfilePic(profilePicPath) {
       });
     }
   }
+
+  reviewDocs.push({
+    title: "Rated 4/5",
+    body: "",
+    rating: 4,
+    helpfulCount: 1,
+    votes: [
+      { user: usersByUsername.get("Tyler")._id, direction: "up" },
+    ],
+    isAnonymous: true,
+    ownerResponse: {
+      body: "Thanks for dropping by El Poco Cantina. We appreciate the quick rating and hope to see you again soon.",
+      respondedAt: new Date("2026-02-16T12:30:00.000Z"),
+      updatedAt: new Date("2026-02-16T12:30:00.000Z"),
+    },
+    author: usersByUsername.get("AniMonstah123")._id,
+    restaurant: restaurantsById.get("rest0007")._id,
+    createdAt: new Date("2026-02-16T12:00:00.000Z"),
+    updatedAt: new Date("2026-02-16T12:00:00.000Z"),
+  });
 
   await Review.insertMany(reviewDocs);
 

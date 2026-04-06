@@ -1,30 +1,30 @@
 <main>
   <div class="register-container">
     <h1>Create Account</h1>
-    <form method="POST" action="/auth/register">
+    <form method="POST" action="/auth/register" id="register-form">
       <div class="form-group">
         <label for="firstName">First Name</label>
-        <input type="text" id="firstName" name="firstName" value="{{formData.firstName}}" required />
+        <input type="text" id="firstName" name="firstName" value="{{formData.firstName}}" minlength="2" maxlength="40" pattern="[A-Za-z][A-Za-z\s'-]{1,39}" required />
       </div>
       <div class="form-group">
         <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" name="lastName" value="{{formData.lastName}}" required />
+        <input type="text" id="lastName" name="lastName" value="{{formData.lastName}}" minlength="2" maxlength="40" pattern="[A-Za-z][A-Za-z\s'-]{1,39}" required />
       </div>
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" value="{{formData.username}}" required />
+        <input type="text" id="username" name="username" value="{{formData.username}}" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required />
       </div>
       <div class="form-group">
         <label for="registerEmail">Email</label>
-        <input type="email" id="registerEmail" name="email" value="{{formData.email}}" required />
+        <input type="email" id="registerEmail" name="email" value="{{formData.email}}" maxlength="120" required />
       </div>
       <div class="form-group">
         <label for="registerPassword">Password</label>
-        <input type="password" id="registerPassword" name="password" required />
+        <input type="password" id="registerPassword" name="password" minlength="8" maxlength="72" required />
       </div>
       <div class="form-group">
         <label for="bio">Bio</label>
-        <textarea id="bio" name="bio" rows="3">{{formData.bio}}</textarea>
+        <textarea id="bio" name="bio" rows="3" maxlength="280">{{formData.bio}}</textarea>
       </div>
       <section class="owner-request-panel">
         <label class="checkbox-row" for="isOwnerRequest">
@@ -61,13 +61,15 @@
             id="ownerContactDetails"
             name="ownerContactDetails"
             value="{{formData.ownerContactDetails}}"
+            minlength="6"
+            maxlength="120"
             placeholder="Phone number, alternate email, or both"
           />
         </div>
 
         <div class="form-group">
           <label for="ownerRequestMessage">Owner Request Notes</label>
-          <textarea id="ownerRequestMessage" name="ownerRequestMessage" rows="3">{{formData.ownerRequestMessage}}</textarea>
+          <textarea id="ownerRequestMessage" name="ownerRequestMessage" rows="3" maxlength="300">{{formData.ownerRequestMessage}}</textarea>
         </div>
       </section>
       {{#if error}}
@@ -80,3 +82,20 @@
     </div>
   </div>
 </main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const ownerCheckbox = document.getElementById("isOwnerRequest");
+    const restaurantSelect = document.getElementById("ownerRestaurantId");
+    const contactInput = document.getElementById("ownerContactDetails");
+
+    function syncOwnerFields() {
+      const isChecked = ownerCheckbox.checked;
+      restaurantSelect.required = isChecked;
+      contactInput.required = isChecked;
+    }
+
+    syncOwnerFields();
+    ownerCheckbox.addEventListener("change", syncOwnerFields);
+  });
+</script>

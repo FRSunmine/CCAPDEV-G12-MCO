@@ -1,13 +1,13 @@
-// reviewController.js (replace the corresponding functions with these)
+const mongoose = require("mongoose");
+const path = require("path");
+const fs = require("fs/promises");
 
 const Restaurant = require("../models/Restaurant");
 const Review = require("../models/Review");
-const mongoose = require("mongoose");
-const path = require("path");
+const { setFlash } = require("../services/flashService");
+const { validateOwnerResponse, validateReviewInput } = require("../services/validationService");
 
-// Defensive refresh of restaurant stats
 async function refreshRestaurantStats(restaurantDbId) {
-  // safe conversion to ObjectId for aggregation match
   let matchId = restaurantDbId;
   if (typeof matchId === "string" && mongoose.isValidObjectId(matchId)) {
     matchId = new mongoose.Types.ObjectId(matchId);
@@ -35,26 +35,121 @@ async function refreshRestaurantStats(restaurantDbId) {
   });
 }
 
-// Helper: canonical current user id (prefer req.currentUser, fallback to session)
 function getCurrentUserId(req) {
-  if (req.currentUser && req.currentUser._id) return String(req.currentUser._id);
-  if (req.session && req.session.userId) return String(req.session.userId);
+  if (req.currentUser && req.currentUser._id) {
+    return String(req.currentUser._id);
+  }
+
+  if (req.session && req.session.userId) {
+    return String(req.session.userId);
+  }
+
   return null;
 }
 
-// Unified create handler (handles optional images/video, validates restaurantId)
+function buildRestaurantUrl(restaurantId, params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchParams.set(key, String(value));
+    }
+  });
+
+  const query = searchParams.toString();
+  return query ? `/restaurants/${restaurantId}?${query}` : `/restaurants/${restaurantId}`;
+}
+
+function redirectToRestaurant(res, restaurantId, params = {}) {
+  return res.redirect(buildRestaurantUrl(restaurantId, params));
+}
+
+function buildPathUrl(basePath, params = {}) {
+  const url = new URL(basePath, "http://localhost");
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  return `${url.pathname}${url.search}`;
+}
+
+function redirectToPath(res, basePath, params = {}) {
+  return res.redirect(buildPathUrl(basePath, params));
+}
+
+function getReturnToPath(req, fallbackPath) {
+  const returnTo = req.body.returnTo ? String(req.body.returnTo).trim() : "";
+
+  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
+    return fallbackPath;
+  }
+
+  return returnTo;
+}
+
+function normalizeAuthorId(currentUserId) {
+  if (mongoose.isValidObjectId(currentUserId)) {
+    return new mongoose.Types.ObjectId(currentUserId);
+  }
+
+  return currentUserId;
+}
+
+async function cleanupUploadedFiles(files) {
+  if (!files) {
+    return;
+  }
+
+  const uploadedFiles = [
+    ...(Array.isArray(files.images) ? files.images : []),
+    ...(Array.isArray(files.video) ? files.video : []),
+  ];
+
+  await Promise.allSettled(uploadedFiles.map((file) => fs.unlink(file.path)));
+}
+
+function attachUploadedMedia(reviewData, files) {
+  const images = [];
+  const videos = [];
+
+  if (files) {
+    if (Array.isArray(files.images) && files.images.length > 0) {
+      files.images.slice(0, 3).forEach((file) => {
+        images.push(path.join("reviews", "img", file.filename).replace(/\\/g, "/"));
+      });
+    }
+
+    if (!images.length && Array.isArray(files.video) && files.video[0]) {
+      const file = files.video[0];
+      videos.push(path.join("reviews", "vid", file.filename).replace(/\\/g, "/"));
+    }
+  }
+
+  if (images.length) {
+    reviewData.images = images;
+    reviewData.videos = [];
+  } else if (videos.length) {
+    reviewData.videos = videos;
+    reviewData.images = [];
+  }
+}
+
 exports.create = async (req, res, next) => {
   try {
     const currentUserId = getCurrentUserId(req);
-    if (!currentUserId) return res.redirect("/login");
+    if (!currentUserId) {
+      return res.redirect("/login");
+    }
 
     const restaurantId = req.body.restaurantId ? String(req.body.restaurantId).trim() : "";
-    const title = req.body.title ? String(req.body.title).trim() : "";
-    const body = req.body.body ? String(req.body.body).trim() : "";
-    const rating = Number(req.body.rating);
-
     if (!restaurantId) {
-      return res.status(400).render("pages/400", { title: "Bad Request", message: "Missing restaurantId" });
+      return res.status(400).render("pages/400", {
+        title: "Bad Request",
+        message: "A restaurant must be selected before creating a review.",
+      });
     }
 
     const restaurant = await Restaurant.findOne({ restaurantId }).select("_id restaurantId").lean();
@@ -62,65 +157,125 @@ exports.create = async (req, res, next) => {
       return res.status(404).render("pages/404", { title: "Restaurant Not Found" });
     }
 
-    // Validate required fields
-    if (!title || !body || Number.isNaN(rating)) {
-      return res.redirect(`/restaurants/${restaurant.restaurantId}`);
+    const validation = validateReviewInput({
+      title: req.body.title ? String(req.body.title).trim() : "",
+      body: req.body.body ? String(req.body.body).trim() : "",
+      rating: Number(req.body.rating),
+      isAnonymous: req.body.isAnonymous,
+    });
+
+    if (validation.error) {
+      await cleanupUploadedFiles(req.files);
+      setFlash(req, "restaurantPageFeedback", {
+        restaurantId: restaurant.restaurantId,
+        error: validation.error,
+        formData: {
+          title: req.body.title ? String(req.body.title).trim() : "",
+          body: req.body.body ? String(req.body.body).trim() : "",
+          rating: Number.isInteger(Number(req.body.rating)) ? Number(req.body.rating) : 5,
+          isAnonymous: req.body.isAnonymous === "on",
+        },
+      });
+      return redirectToRestaurant(res, restaurant.restaurantId, {
+        feedbackType: "error",
+        feedbackScope: "review",
+        openReviewId: existingReview._id,
+      });
     }
 
-    let authorId = currentUserId;
-    if (typeof authorId === "string") {
-      if (mongoose.isValidObjectId(authorId)) {
-        authorId = new mongoose.Types.ObjectId(authorId);
-      } else {
-        // leave as string (unlikely) or handle as error
-        // optional: return res.status(400).render("400", { title: "Bad Request", message: "Invalid user id" });
-      }
+    const hasImages = Array.isArray(req.files?.images) && req.files.images.length > 0;
+    const hasVideo = Array.isArray(req.files?.video) && req.files.video.length > 0;
+    if (hasImages && hasVideo) {
+      await cleanupUploadedFiles(req.files);
+      setFlash(req, "restaurantPageFeedback", {
+        restaurantId: restaurant.restaurantId,
+        error: "Attach either up to 3 images or 1 video per review, not both at the same time.",
+        formData: {
+          title: validation.value.title,
+          body: validation.value.body,
+          rating: validation.value.rating,
+          isAnonymous: req.body.isAnonymous === "on",
+        },
+      });
+      return redirectToRestaurant(res, restaurant.restaurantId, {
+        feedbackType: "error",
+        feedbackScope: "review",
+      });
     }
 
     const reviewData = {
-      title,
-      body,
-      rating,
-      author: authorId,
-      restaurant: restaurant._id
+      ...validation.value,
+      isAnonymous: req.body.isAnonymous === "on",
+      author: normalizeAuthorId(currentUserId),
+      restaurant: restaurant._id,
     };
 
+    const existingReview = await Review.findOne({
+      author: reviewData.author,
+      restaurant: restaurant._id,
+    }).lean();
 
-    // Handle uploaded files (images preferred over video)
-    const images = [];
-    const videos = [];
-    if (req.files) {
-      if (Array.isArray(req.files.images) && req.files.images.length > 0) {
-        req.files.images.slice(0, 3).forEach(f => {
-          images.push(path.join("reviews", "img", f.filename).replace(/\\/g, "/"));
-        });
-      }
-      if ((!images.length) && Array.isArray(req.files.video) && req.files.video[0]) {
-        const f = req.files.video[0];
-        videos.push(path.join("reviews", "vid", f.filename).replace(/\\/g, "/"));
-      }
+    if (existingReview) {
+      await cleanupUploadedFiles(req.files);
+      setFlash(req, "restaurantPageFeedback", {
+        restaurantId: restaurant.restaurantId,
+        error: "You already reviewed this restaurant. Edit your existing review instead.",
+        formData: {
+          title: validation.value.title,
+          body: validation.value.body,
+          rating: validation.value.rating,
+          isAnonymous: req.body.isAnonymous === "on",
+        },
+      });
+      return redirectToRestaurant(res, restaurant.restaurantId, {
+        feedbackType: "error",
+        feedbackScope: "review",
+      });
     }
-    if (images.length) reviewData.images = images;
-    else if (videos.length) reviewData.videos = videos;
 
-    // Create review
-    const created = await Review.create(reviewData);
+    attachUploadedMedia(reviewData, req.files);
 
-    // Refresh restaurant stats (async but await to keep counts consistent)
+    await Review.create(reviewData);
     await refreshRestaurantStats(restaurant._id);
 
-    // Safe redirect using the restaurantId we looked up earlier
-    return res.redirect(`/restaurants/${restaurant.restaurantId}`);
+    return redirectToRestaurant(res, restaurant.restaurantId, {
+      feedbackType: "success",
+      feedback: "Your review was posted.",
+      feedbackScope: "review",
+    });
   } catch (error) {
+    await cleanupUploadedFiles(req.files);
+
+    if (error && error.code === 11000) {
+      const restaurantId = req.body.restaurantId ? String(req.body.restaurantId).trim() : "";
+      if (restaurantId) {
+        setFlash(req, "restaurantPageFeedback", {
+          restaurantId,
+          error: "You already reviewed this restaurant. Edit your existing review instead.",
+          formData: {
+            title: req.body.title ? String(req.body.title).trim() : "",
+            body: req.body.body ? String(req.body.body).trim() : "",
+            rating: Number.isInteger(Number(req.body.rating)) ? Number(req.body.rating) : 5,
+            isAnonymous: req.body.isAnonymous === "on",
+          },
+        });
+        return redirectToRestaurant(res, restaurantId, {
+          feedbackType: "error",
+          feedbackScope: "review",
+        });
+      }
+    }
+
     return next(error);
   }
 };
 
-// Update handler (unchanged logic but use canonical user id)
 exports.update = async (req, res, next) => {
   try {
     const currentUserId = getCurrentUserId(req);
-    if (!currentUserId) return res.redirect("/login");
+    if (!currentUserId) {
+      return res.redirect("/login");
+    }
 
     const review = await Review.findOne({
       _id: req.params.reviewId,
@@ -131,49 +286,48 @@ exports.update = async (req, res, next) => {
       return res.status(404).render("pages/404", { title: "Review Not Found" });
     }
 
-    const title = req.body.title ? req.body.title.trim() : "";
-    const body = req.body.body ? req.body.body.trim() : "";
-    const rating = Number(req.body.rating);
+    const validation = validateReviewInput({
+      title: req.body.title ? req.body.title.trim() : "",
+      body: req.body.body ? req.body.body.trim() : "",
+      rating: Number(req.body.rating),
+      isAnonymous: req.body.isAnonymous,
+    });
 
-    // If validation fails, redirect back to the restaurant page
-    if (!title || !body || Number.isNaN(rating)) {
-      const failRestaurantId = review.restaurant && review.restaurant.restaurantId
-        ? review.restaurant.restaurantId
-        : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
-
-      if (failRestaurantId) {
-        return res.redirect(`/restaurants/${failRestaurantId}`);
-      }
-      return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
+    if (validation.error) {
+      const returnToPath = getReturnToPath(req, `/restaurants/${review.restaurant.restaurantId}`);
+      return redirectToPath(res, returnToPath, {
+        feedbackType: "error",
+        feedback: validation.error,
+        openReviewId: review._id,
+      });
     }
 
-    review.title = title;
-    review.body = body;
-    review.rating = rating;
+    review.title = validation.value.title;
+    review.body = validation.value.body;
+    review.rating = validation.value.rating;
+    review.isAnonymous = req.body.isAnonymous === "on";
     review.updatedAt = new Date();
 
     await review.save();
     await refreshRestaurantStats(review.restaurant._id);
 
-    const restaurantId = (review.restaurant && review.restaurant.restaurantId)
-      ? review.restaurant.restaurantId
-      : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
-
-    if (restaurantId) {
-      return res.redirect(`/restaurants/${restaurantId}`);
-    }
-
-    return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
+    const returnToPath = getReturnToPath(req, `/restaurants/${review.restaurant.restaurantId}`);
+    return redirectToPath(res, returnToPath, {
+      feedbackType: "success",
+      feedback: "Your review was updated.",
+      openReviewId: review._id,
+    });
   } catch (error) {
     return next(error);
   }
 };
 
-// Remove handler (unchanged logic but canonical user id)
 exports.remove = async (req, res, next) => {
   try {
     const currentUserId = getCurrentUserId(req);
-    if (!currentUserId) return res.redirect("/login");
+    if (!currentUserId) {
+      return res.redirect("/login");
+    }
 
     const review = await Review.findOne({
       _id: req.params.reviewId,
@@ -181,47 +335,55 @@ exports.remove = async (req, res, next) => {
     }).populate("restaurant");
 
     if (!review) {
-      return res.status(404).render("404", { title: "Review Not Found" });
+      return res.status(404).render("pages/404", { title: "Review Not Found" });
     }
 
     const restaurantDbId = review.restaurant._id;
+    const restaurantId = review.restaurant.restaurantId;
 
     await review.deleteOne();
     await refreshRestaurantStats(restaurantDbId);
 
-    const restaurantId = (review.restaurant && review.restaurant.restaurantId)
-      ? review.restaurant.restaurantId
-      : (review.restaurant && review.restaurant._id ? String(review.restaurant._id) : null);
-
-    if (restaurantId) {
-      return res.redirect(`/restaurants/${restaurantId}`);
-    }
-
-    return res.redirect(`/profile/${req.currentUser ? req.currentUser.username : ""}`);
+    const returnToPath = getReturnToPath(req, `/restaurants/${restaurantId}`);
+    return redirectToPath(res, returnToPath, {
+      feedbackType: "success",
+      feedback: "Your review was deleted.",
+    });
   } catch (error) {
     return next(error);
   }
 };
 
-// Vote handler with toggle-off and safe redirect
 exports.vote = async (req, res, next) => {
   try {
     const userId = getCurrentUserId(req);
-    if (!userId) return res.redirect("/login");
+    if (!userId) {
+      return res.redirect("/login");
+    }
 
     const reviewId = req.params.reviewId;
     const direction = req.body.direction === "down" ? "down" : "up";
 
-    const review = await Review.findById(reviewId).select("restaurant votes helpfulCount").lean();
+    const review = await Review.findById(reviewId).select("restaurant votes helpfulCount author").lean();
     if (!review || !review.restaurant) {
       return res.redirect("/");
     }
 
-    const updatedVotes = Array.isArray(review.votes) ? [...review.votes] : [];
-    const existingVoteIndex = updatedVotes.findIndex(
-      (vote) => String(vote.user) === userId
-    );
+    const restaurant = await Restaurant.findById(review.restaurant).select("restaurantId").lean();
+    if (!restaurant) {
+      return res.redirect("/");
+    }
 
+    if (String(review.author) === userId) {
+      return redirectToRestaurant(res, restaurant.restaurantId, {
+        feedbackType: "error",
+        feedback: "You cannot vote on your own review.",
+        feedbackScope: "review",
+      });
+    }
+
+    const updatedVotes = Array.isArray(review.votes) ? [...review.votes] : [];
+    const existingVoteIndex = updatedVotes.findIndex((vote) => String(vote.user) === userId);
     let scoreDelta = 0;
 
     if (existingVoteIndex >= 0) {
@@ -229,46 +391,23 @@ exports.vote = async (req, res, next) => {
 
       if (previousDirection === direction) {
         updatedVotes.splice(existingVoteIndex, 1);
-
         scoreDelta = direction === "up" ? -1 : 1;
       } else {
         updatedVotes[existingVoteIndex].direction = direction;
-
-        if (previousDirection === "up" && direction === "down") {
-          scoreDelta = -2;
-        } else if (previousDirection === "down" && direction === "up") {
-          scoreDelta = 2;
-        }
+        scoreDelta = previousDirection === "up" && direction === "down" ? -2 : 2;
       }
     } else {
-      updatedVotes.push({
-        user: userId,
-        direction,
-      });
-
+      updatedVotes.push({ user: userId, direction });
       scoreDelta = direction === "up" ? 1 : -1;
     }
 
-    const updatedHelpfulCount = (review.helpfulCount || 0) + scoreDelta;
-    const updatedAt = new Date();
-
     await Review.findByIdAndUpdate(reviewId, {
       votes: updatedVotes,
-      helpfulCount: updatedHelpfulCount,
-      updatedAt,
+      helpfulCount: (review.helpfulCount || 0) + scoreDelta,
+      updatedAt: new Date(),
     });
 
-    let redirectRestaurantId = null;
-    if (typeof review.restaurant === "object" && review.restaurant.restaurantId) {
-      redirectRestaurantId = review.restaurant.restaurantId;
-    } else {
-      const rest = await Restaurant.findById(review.restaurant).select("restaurantId").lean();
-      redirectRestaurantId = rest ? rest.restaurantId : null;
-    }
-
-    if (!redirectRestaurantId) return res.redirect("/");
-
-    return res.redirect(`/restaurants/${redirectRestaurantId}`);
+    return redirectToRestaurant(res, restaurant.restaurantId);
   } catch (error) {
     return next(error);
   }
@@ -279,7 +418,7 @@ exports.respond = async (req, res, next) => {
     const review = await Review.findById(req.params.reviewId).populate("restaurant");
 
     if (!review) {
-      return res.status(404).render("404", { title: "Review Not Found" });
+      return res.status(404).render("pages/404", { title: "Review Not Found" });
     }
 
     const restaurant = await Restaurant.findById(review.restaurant._id).select("restaurantId owner");
@@ -292,25 +431,86 @@ exports.respond = async (req, res, next) => {
     );
 
     if (!isOwnerForRestaurant) {
-      return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+      return redirectToRestaurant(res, review.restaurant.restaurantId, {
+        feedbackType: "error",
+        feedback: "Only the assigned restaurant owner can publish a response here.",
+        feedbackScope: "owner",
+      });
     }
 
     const responseBody = req.body.responseBody ? req.body.responseBody.trim() : "";
-    if (!responseBody) {
-      return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+    const responseError = validateOwnerResponse(responseBody);
+    if (responseError) {
+      return redirectToRestaurant(res, review.restaurant.restaurantId, {
+        feedbackType: "error",
+        feedback: responseError,
+        feedbackScope: "owner",
+        openReviewId: review._id,
+      });
     }
 
     const timestamp = new Date();
     review.ownerResponse = {
       body: responseBody,
-      respondedAt: review.ownerResponse && review.ownerResponse.respondedAt ? review.ownerResponse.respondedAt : timestamp,
+      respondedAt: review.ownerResponse && review.ownerResponse.respondedAt
+        ? review.ownerResponse.respondedAt
+        : timestamp,
       updatedAt: timestamp,
     };
     review.updatedAt = timestamp;
 
     await review.save();
 
-    return res.redirect(`/restaurants/${review.restaurant.restaurantId}`);
+    return redirectToRestaurant(res, review.restaurant.restaurantId, {
+      feedbackType: "success",
+      feedback: "Owner response published.",
+      feedbackScope: "owner",
+      openReviewId: review._id,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.removeResponse = async (req, res, next) => {
+  try {
+    const review = await Review.findById(req.params.reviewId).populate("restaurant");
+
+    if (!review) {
+      return res.status(404).render("pages/404", { title: "Review Not Found" });
+    }
+
+    const restaurant = await Restaurant.findById(review.restaurant._id).select("restaurantId owner");
+    const isOwnerForRestaurant = Boolean(
+      req.currentUser &&
+      req.currentUser.role === "owner" &&
+      restaurant &&
+      restaurant.owner &&
+      String(restaurant.owner) === String(req.currentUser._id)
+    );
+
+    if (!isOwnerForRestaurant) {
+      return redirectToRestaurant(res, review.restaurant.restaurantId, {
+        feedbackType: "error",
+        feedback: "Only the assigned restaurant owner can remove a response here.",
+        feedbackScope: "owner",
+      });
+    }
+
+    review.ownerResponse = {
+      body: "",
+      respondedAt: null,
+      updatedAt: null,
+    };
+    review.updatedAt = new Date();
+    await review.save();
+
+    return redirectToRestaurant(res, review.restaurant.restaurantId, {
+      feedbackType: "success",
+      feedback: "Owner response removed.",
+      feedbackScope: "owner",
+      openReviewId: review._id,
+    });
   } catch (error) {
     return next(error);
   }

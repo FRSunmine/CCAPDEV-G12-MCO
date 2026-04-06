@@ -607,6 +607,9 @@ body {
   border-radius: 12px;
   background: #f8fcf9;
 }
+.muted-section {
+  opacity: 0.65;
+}
 
 .checkbox-row {
   display: flex;
@@ -1675,7 +1678,131 @@ body {
 
 /* .review-dropdown {} */
 
+.search-top-review {
+  margin-top: 8px;
+}
+
+.about-layout {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 48px;
+}
+
+.about-card h2 {
+  margin-top: 0;
+}
+
+.about-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.about-item {
+  padding: 16px;
+  border: 1px solid #e2ece4;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.about-item h3 {
+  margin: 0 0 8px;
+  color: #055a2f;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+
+.insight-card {
+  padding: 20px;
+  border: 1px solid #e2ece4;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.insight-card h2 {
+  margin: 4px 0 8px;
+  color: #055a2f;
+}
+
+.insight-label {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.review-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff5db;
+  color: #8a5a00;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.neutral-badge {
+  background: #eef2f7;
+  color: #475569;
+}
+
 /* End of main rules - sticky footer rules last so they reliably apply */
 body { display: flex; flex-direction: column; min-height: 100vh; }
 main, .page-container { flex: 1 0 auto; }
 .site-footer { margin-top: auto; padding: 18px 0; }
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.compact-form-group {
+  margin-top: 12px;
+}
+
+.search-review-panel,
+.about-card {
+  margin-top: 24px;
+}
+
+.search-review-list,
+.about-list {
+  display: grid;
+  gap: 16px;
+}
+
+.search-review-card,
+.about-list-item {
+  padding: 18px;
+  border: 1px solid #e2ece4;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.search-review-card h4,
+.about-list-item h3 {
+  margin: 0 0 8px;
+  color: #055a2f;
+}
+
+.about-shell {
+  display: grid;
+  gap: 24px;
+  padding-bottom: 48px;
+}
+
+.about-card p {
+  margin-top: 8px;
+}

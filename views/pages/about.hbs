@@ -1,0 +1,41 @@
+<main>
+  <section class="top-hero">
+    <div class="page-container hero-row hero-row-single">
+      <div class="hero-text">
+        <h1>About Animo Eats</h1>
+        <p class="sub">Restaurant discovery, community reviews, owner responses, and student-friendly food browsing around DLSU.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-container about-shell">
+    <section class="review-form-card about-card">
+      <h2>Project Summary</h2>
+      <p>Animo Eats is a restaurant and store review web application focused on helping the Lasallian community compare dining options near campus. The app supports restaurant browsing, keyword search, account registration, public profiles, reviews, helpful or unhelpful voting, owner verification requests, and owner responses.</p>
+    </section>
+
+    <section class="review-form-card about-card">
+      <h2>NPM Packages Used</h2>
+      <div class="about-list">
+        {{#each dependencies}}
+          <article class="about-list-item">
+            <h3>{{this.name}}</h3>
+            <p>Version: {{this.version}}</p>
+          </article>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="review-form-card about-card">
+      <h2>Third-Party Libraries and Services</h2>
+      <div class="about-list">
+        {{#each externalLibraries}}
+          <article class="about-list-item">
+            <h3>{{this.name}}</h3>
+            <p>{{this.purpose}}</p>
+          </article>
+        {{/each}}
+      </div>
+    </section>
+  </section>
+</main>

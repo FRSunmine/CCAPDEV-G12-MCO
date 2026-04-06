@@ -1,4 +1,9 @@
 const User = require("../models/User");
+const { validateAccountInput } = require("../services/validationService");
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 exports.updateProfile = async (req, res, next) => {
   try {
@@ -17,9 +22,26 @@ exports.updateProfile = async (req, res, next) => {
       });
     }
 
+    const validationError = validateAccountInput({
+      firstName,
+      lastName,
+      username,
+      email,
+      bio,
+      profilePic,
+    });
+
+    if (validationError) {
+      return res.status(400).render("user/edit-profile", {
+        title: "Edit Profile",
+        error: validationError,
+        formData: { firstName, lastName, username, email, bio, profilePic },
+      });
+    }
+
     const existingUser = await User.findOne({
       _id: { $ne: req.session.userId },
-      $or: [{ username }, { email }],
+      $or: [{ username: new RegExp(`^${escapeRegex(username)}$`, "i") }, { email }],
     });
 
     if (existingUser) {

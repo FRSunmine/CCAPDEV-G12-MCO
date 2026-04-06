@@ -3,8 +3,8 @@ const { Schema, model } = require("mongoose");
 const ownerRequestSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant", required: true },
-  contactDetails: { type: String, required: true, trim: true },
-  message: { type: String, trim: true, default: "" },
+  contactDetails: { type: String, required: true, trim: true, minlength: 6, maxlength: 120 },
+  message: { type: String, trim: true, default: "", maxlength: 300 },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],

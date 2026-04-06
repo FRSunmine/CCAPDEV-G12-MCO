@@ -3,6 +3,8 @@ const Review = require("../models/Review");
 const Restaurant = require("../models/Restaurant");
 const OwnerRequest = require("../models/OwnerRequest");
 const { getOwnerRequestRestaurants } = require("../services/ownerRequestService");
+const { getAboutPageData } = require("../services/aboutService");
+const { summarizeProfileInsights } = require("../services/profileInsightsService");
 
 exports.getWelcomePage = (req, res) => {
   res.render("pages/welcome", { title: "Welcome" });
@@ -20,6 +22,9 @@ exports.getLoginPage = (req, res) => {
   return res.render("auth/login", {
     title: "Login",
     error: req.query.error || null,
+    formData: {
+      identifier: "",
+    },
   });
 };
 
@@ -71,6 +76,7 @@ exports.getProfilePage = async (req, res, next) => {
     const managedRestaurants = await Restaurant.find({ owner: profile._id })
       .sort({ name: 1 })
       .lean();
+    const openReviewId = req.query.openReviewId ? String(req.query.openReviewId) : "";
 
     const isOwnProfile = Boolean(req.currentUser) && String(req.currentUser._id) === String(profile._id);
     const ownerRequests = isOwnProfile
@@ -83,6 +89,8 @@ exports.getProfilePage = async (req, res, next) => {
       ...review,
       canManage: isOwnProfile,
       restaurantPath: `/restaurants/${review.restaurant.restaurantId}`,
+      isEdited: new Date(review.updatedAt).getTime() - new Date(review.createdAt).getTime() > 1000,
+      isManageOpen: String(review._id) === openReviewId,
     }));
     const mappedManagedRestaurants = managedRestaurants.map((restaurant) => ({
       ...restaurant,
@@ -100,10 +108,16 @@ exports.getProfilePage = async (req, res, next) => {
         ...request,
         restaurantPath: `/restaurants/${request.restaurant.restaurantId}`,
       }));
+    const reviewInsights = summarizeProfileInsights(reviews);
 
     return res.render("user/profile-template", {
       title: profile.username,
       profile,
+      critiqueLevel: reviewInsights.critiqueLevel,
+      helpfulScore: reviewInsights.helpfulScore,
+      helpfulVotesReceived: reviewInsights.helpfulVotes,
+      unhelpfulVotesReceived: reviewInsights.unhelpfulVotes,
+      anonymousReviewsCount: reviewInsights.anonymousReviews,
       reviews: mappedReviews,
       reviewsCount: mappedReviews.length,
       managedRestaurants: mappedManagedRestaurants,
@@ -111,6 +125,8 @@ exports.getProfilePage = async (req, res, next) => {
       pendingOwnerRequests,
       rejectedOwnerRequests,
       isOwnProfile,
+      feedbackType: req.query.feedbackType || null,
+      feedbackMessage: req.query.feedback || null,
     });
   } catch (error) {
     return next(error);
@@ -128,8 +144,8 @@ exports.getContactPage = async (req, res, next) => {
       selectedRestaurantId,
       formData: {
         restaurantId: selectedRestaurantId,
-        contactDetails: "",
-        message: "",
+        contactDetails: req.query.contactDetails || "",
+        message: req.query.message || "",
       },
       requestSubmitted: req.query.success === "owner-request",
       requestError: req.query.error || null,
@@ -151,5 +167,15 @@ exports.getEditProfilePage = (req, res) => {
       profilePic: req.currentUser.profilePic || "",
     },
     error: req.query.error || null,
+  });
+};
+
+exports.getAboutPage = (req, res) => {
+  const aboutPageData = getAboutPageData();
+
+  return res.render("pages/about", {
+    title: "About",
+    dependencies: aboutPageData.packages,
+    externalLibraries: aboutPageData.libraries,
   });
 };

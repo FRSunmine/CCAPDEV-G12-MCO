@@ -19,6 +19,7 @@
             <nav class="nav-links">
                 <a href="/">Welcome</a>
                 <a href="/restaurants">Search</a>
+                <a href="/about">About</a>
                 {{#if currentUser}}
                   {{#if (eq currentUser.role "admin")}}
                     <a href="/admin">Admin</a>
@@ -39,9 +40,10 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; Animo Eats — For the Lasallian community</p>
+            <p>&copy; Animo Eats - For the Lasallian community</p>
             <nav class="footer-nav">
-            <a href="/contact">Contact</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
             </nav>
         </div>
     </footer>

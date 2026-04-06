@@ -41,12 +41,12 @@
 
           <div class="form-group">
             <label for="ownerRequestContact">Contact Details</label>
-            <input id="ownerRequestContact" name="contactDetails" type="text" value="{{formData.contactDetails}}" placeholder="Phone number, alternate email, or both" required>
+            <input id="ownerRequestContact" name="contactDetails" type="text" value="{{formData.contactDetails}}" minlength="6" maxlength="120" placeholder="Phone number, alternate email, or both" required>
           </div>
 
           <div class="form-group">
             <label for="ownerRequestMessage">Extra Notes</label>
-            <textarea id="ownerRequestMessage" name="message" rows="4" placeholder="Optional context for admin.">{{formData.message}}</textarea>
+            <textarea id="ownerRequestMessage" name="message" rows="4" maxlength="300" placeholder="Optional context for admin.">{{formData.message}}</textarea>
           </div>
 
           <button type="submit" class="register-button">Submit Request</button>
@@ -56,26 +56,23 @@
         <a class="button-link" href="/login">Login to Continue</a>
       {{/if}}
     </section>
-    <br>
-    <hr>
-    <br>
+
     <section class="contact-details">
-        <div class="hero-text">
-            <h1>Contact Details</h1>
-        </div>
-        
-        <div>
-            <h3>Phone Numbers</h3>
-            <p>Primary: 0909 123 4567</p>
-            <p>Support: 0908 123 4567</p>
-        </div>
-        <br>
-        <div>
-            <h3>Emails</h3>
-            <p>Main: <a href="mailto:mainanimo@animo-eats.example">main_animo@animoeats.example</a></p>
-            <p>Secondary: <a href="mailto:secondanimo@animo-eats.example">second_animo@animoeats.example</a></p>
-        </div>
+      <div class="hero-text">
+        <h1>Contact Details</h1>
+      </div>
+
+      <div>
+        <h3>Phone Numbers</h3>
+        <p>Primary: 0909 123 4567</p>
+        <p>Support: 0908 123 4567</p>
+      </div>
+
+      <div>
+        <h3>Emails</h3>
+        <p>Main: <a href="mailto:main_animo@animoeats.example">main_animo@animoeats.example</a></p>
+        <p>Secondary: <a href="mailto:second_animo@animoeats.example">second_animo@animoeats.example</a></p>
+      </div>
     </section>
   </section>
-  
 </main>

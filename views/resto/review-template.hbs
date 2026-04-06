@@ -3,7 +3,7 @@
     <div class="page-container hero-row hero-row-single">
       <div class="hero-text">
         <h1>{{restaurant.name}}</h1>
-        <p class="sub">{{restaurant.location}} • {{restaurant.priceRange}} • {{restaurant.reviewCount}} reviews</p>
+        <p class="sub">{{restaurant.location}} | {{restaurant.displayPriceRange}} | {{restaurant.reviewCount}} reviews</p>
       </div>
     </div>
   </section>
@@ -12,20 +12,20 @@
     <div class="restaurant-logo">
       <img src="{{restaurant.imageSrc}}" alt="{{restaurant.name}}">
     </div>
-      <div class="card-body restaurant-details">
-        <h3 class="title">{{restaurant.name}}</h3>
-        <p class="meta">
-          {{restaurant.location}} <br>
-          {{restaurant.priceRange}} • ★ {{restaurant.rating}}
-        </p>
-        {{#if hasOwner}}
-          <p class="owner-chip">Managed by <a class="inline-link" href="/profile/{{owner.username}}">{{owner.username}}</a></p>
-        {{else}}
-          <p class="owner-chip owner-chip-open">No owner account assigned yet.</p>
-        {{/if}}
-        <div class="cuisine-list">
-          {{#each restaurant.cuisineTypes}}
-            <span class="cuisine-btn">{{this}}</span>
+    <div class="card-body restaurant-details">
+      <h3 class="title">{{restaurant.name}}</h3>
+      <p class="meta">
+        {{restaurant.location}}<br>
+        {{restaurant.displayPriceRange}} | {{restaurant.rating}}/5
+      </p>
+      {{#if hasOwner}}
+        <p class="owner-chip">Managed by <a class="inline-link" href="/profile/{{owner.username}}">{{owner.username}}</a></p>
+      {{else}}
+        <p class="owner-chip owner-chip-open">No owner account assigned yet.</p>
+      {{/if}}
+      <div class="cuisine-list">
+        {{#each restaurant.cuisineTypes}}
+          <span class="cuisine-btn">{{this}}</span>
         {{/each}}
       </div>
       <p class="excerpt">{{restaurant.previewDescription}}</p>
@@ -35,67 +35,83 @@
   <section class="restaurant-review-layout page-container">
     <aside class="review-form-panel">
       {{#if currentUser}}
-        <section class="login-container review-form-card">
-          <h1>Add a Review</h1>
-          <!-- in review-template.hbs Add enctype and file inputs -->
-          <form method="POST" action="/reviews" enctype="multipart/form-data" class="review-post-form">
-            <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
+        <section class="review-form-card">
+          <h2>Add a Review</h2>
 
-            <div class="form-group">
-              <label for="reviewTitle">Title</label>
-              <input id="reviewTitle" name="title" type="text" required />
-            </div>
+          {{#if currentUserHasReview}}
+            <p class="utility-copy">You already posted a review for this restaurant. Edit your existing review below.</p>
+            <a class="button-link secondary-button" href="#review-{{currentUserReviewId}}">Jump to My Review</a>
+          {{else}}
+            <form method="POST" action="/reviews" enctype="multipart/form-data" class="review-post-form">
+              <input type="hidden" name="restaurantId" value="{{restaurant.restaurantId}}">
 
-            <div class="form-group">
-              <label for="reviewRating">Rating</label>
-              <select id="reviewRating" name="rating" required>
-                <option value="5">5</option>
-                <option value="4">4</option>
-                <option value="3">3</option>
-                <option value="2">2</option>
-                <option value="1">1</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="reviewBody">Review</label>
-              <textarea id="reviewBody" name="body" rows="5" required></textarea>
-            </div>
-
-            <!-- Icon buttons for media -->
-            <div class="form-group media-controls">
-              <!-- Hidden file inputs -->
-              <input id="inputImages" name="images" type="file" accept="image/*" multiple class="visually-hidden">
-              <input id="inputVideo" name="video" type="file" accept="video/*" class="visually-hidden">
-
-              <!-- Icon buttons (labels) -->
-              <label for="inputImages" class="media-icon-btn" title="Attach images (max 3)">
-                <!-- simple inline SVG icon for image -->
-                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                  <path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14h18zM8.5 11.5l2.5 3 3.5-4.5L19 17H5l3.5-5.5z"/>
-                </svg>
-                <span class="media-label">Image</span>
-              </label>
-
-              <label for="inputVideo" class="media-icon-btn" title="Attach a video">
-                <!-- simple inline SVG icon for video -->
-                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                  <path fill="currentColor" d="M17 10.5V7c0-1.1-.9-2-2-2H5C3.9 5 3 5.9 3 7v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z"/>
-                </svg>
-                <span class="media-label">Video</span>
-              </label>
-
-              <!-- small preview area -->
-              <div class="media-preview" aria-live="polite">
-                <span class="media-help">Optional: attach images or a video</span>
-                <div class="media-files"></div>
+              <div class="form-group">
+                <label for="reviewTitle">Title</label>
+                <input
+                  id="reviewTitle"
+                  name="title"
+                  type="text"
+                  value="{{reviewFormData.title}}"
+                  maxlength="80"
+                  placeholder="Optional short headline"
+                />
               </div>
-            </div>
 
-            <button type="submit" class="register-button">Post Review</button>
-          </form>
+              <div class="form-group">
+                <label for="reviewRating">Rating</label>
+                <select id="reviewRating" name="rating" required>
+                  <option value="5" {{#if (eq reviewFormData.rating 5)}}selected{{/if}}>5</option>
+                  <option value="4" {{#if (eq reviewFormData.rating 4)}}selected{{/if}}>4</option>
+                  <option value="3" {{#if (eq reviewFormData.rating 3)}}selected{{/if}}>3</option>
+                  <option value="2" {{#if (eq reviewFormData.rating 2)}}selected{{/if}}>2</option>
+                  <option value="1" {{#if (eq reviewFormData.rating 1)}}selected{{/if}}>1</option>
+                </select>
+              </div>
 
+              <div class="form-group">
+                <label for="reviewBody">Review</label>
+                <textarea
+                  id="reviewBody"
+                  name="body"
+                  rows="5"
+                  maxlength="1000"
+                  placeholder="Optional written review. Leave this blank if you only want to submit a rating."
+                >{{reviewFormData.body}}</textarea>
+              </div>
 
+              <label class="checkbox-row" for="reviewAnonymous">
+                <input id="reviewAnonymous" name="isAnonymous" type="checkbox" {{#if reviewFormData.isAnonymous}}checked{{/if}}>
+                <span>Post this review anonymously on the restaurant page.</span>
+              </label>
+              <p class="form-note">Your own profile still lists the review under your account.</p>
+
+              <div class="form-group media-controls">
+                <input id="inputImages" name="images" type="file" accept="image/*" multiple class="visually-hidden">
+                <input id="inputVideo" name="video" type="file" accept="video/*" class="visually-hidden">
+
+                <label for="inputImages" class="media-icon-btn" title="Attach images (max 3)">
+                  <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14h18zM8.5 11.5l2.5 3 3.5-4.5L19 17H5l3.5-5.5z"/>
+                  </svg>
+                  <span class="media-label">Image</span>
+                </label>
+
+                <label for="inputVideo" class="media-icon-btn" title="Attach a video">
+                  <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path fill="currentColor" d="M17 10.5V7c0-1.1-.9-2-2-2H5C3.9 5 3 5.9 3 7v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z"/>
+                  </svg>
+                  <span class="media-label">Video</span>
+                </label>
+
+                <div class="media-preview" aria-live="polite">
+                  <span class="media-help">Attach up to 3 images or 1 video.</span>
+                  <div class="media-files"></div>
+                </div>
+              </div>
+
+              <button type="submit" class="register-button">Post Review</button>
+            </form>
+          {{/if}}
         </section>
       {{else}}
         <section class="review-form-card guest-review-card">
@@ -108,7 +124,7 @@
       <section class="review-form-card owner-request-card">
         <h2>Owner Access</h2>
         {{#if isOwnerForRestaurant}}
-          <p class="utility-copy">You can respond publicly to reviews for this restaurant below.</p>
+          <p class="utility-copy">You can publish, update, or remove public owner responses on each review below.</p>
         {{else}}
           {{#if isAdminUser}}
             <p class="utility-copy">Assign restaurant owners from the admin dashboard.</p>
@@ -116,10 +132,10 @@
           {{else}}
             {{#if canRequestOwnership}}
               {{#if currentUser}}
-                <p class="utility-copy">Own this place? Send your contact details to admin and we can tag your account as the restaurant owner.</p>
-                <a class="button-link secondary-button" href="/admin-support?restaurantId={{restaurant.restaurantId}}">Are You the Owner?</a>
+                <p class="utility-copy">Own this place? Send your contact details to admin so your account can be tagged as the restaurant owner.</p>
+                <a class="button-link secondary-button" href="/admin-support?restaurantId={{restaurant.restaurantId}}">Request Owner Access</a>
               {{else}}
-                <p class="utility-copy">Own this place? Register first and include your owner details so admin can review the request.</p>
+                <p class="utility-copy">Own this place? Register first and include your owner details for admin review.</p>
                 <a class="button-link secondary-button" href="/register?ownerRequest=1&restaurantId={{restaurant.restaurantId}}">Register as Owner</a>
               {{/if}}
             {{else}}
@@ -131,23 +147,44 @@
     </aside>
 
     <section class="review-feed">
-      <h2>Reviews</h2>
+      <div class="results-header">
+        <h2>Reviews</h2>
+      </div>
+
+      {{#if feedbackMessage}}
+        <div class="{{#if (eq feedbackType "error")}}error-box{{else}}success-box{{/if}}">{{feedbackMessage}}</div>
+      {{/if}}
+
       {{#if hasReviews}}
         {{#each reviews}}
-          <article class="review-card" data-review-id="{{this._id}}">
+          <article class="review-card" id="review-{{this._id}}" data-review-id="{{this._id}}">
             <div class="review-profile">
-              <img class="profile-pic" src="{{this.author.profilePic}}" alt="{{this.author.username}} profile picture"
+              <img class="profile-pic" src="{{this.authorDisplayPic}}" alt="{{this.authorDisplayName}} profile picture"
                 onerror="this.onerror=null;this.src='/img/default_profile.png';">
               <div class="review-meta">
-                <p class="username"><a class="inline-link" href="{{this.authorProfilePath}}">{{this.author.username}}</a></p>
+                {{#if this.authorDisplayPath}}
+                  <p class="username"><a class="inline-link" href="{{this.authorDisplayPath}}">{{this.authorDisplayName}}</a></p>
+                {{else}}
+                  <p class="username">{{this.authorDisplayName}}</p>
+                {{/if}}
                 <p class="date">{{formatDate this.createdAt}}</p>
               </div>
             </div>
 
             <div class="review-message">
-              <h4>{{this.title}}</h4>
+              <h4>{{this.displayTitle}}</h4>
               <p class="rating">Rating: {{this.rating}}/5</p>
-              <p class="msg">{{this.body}}</p>
+              {{#if this.isAnonymous}}
+                <p class="utility-copy">Posted anonymously on the public restaurant page.</p>
+              {{/if}}
+              {{#if this.wasEdited}}
+                <p class="utility-copy">Edited after posting.</p>
+              {{/if}}
+              {{#if this.displayBody}}
+                <p class="msg">{{this.displayBody}}</p>
+              {{else}}
+                <p class="utility-copy">This user left a rating without a written review.</p>
+              {{/if}}
 
               {{#if this.ownerResponse.body}}
                 <div class="owner-response-box">
@@ -163,11 +200,11 @@
                 Edit / Delete
               </button>
 
-              <div id="manage-{{this._id}}" class="review-manage-box">
+              <div id="manage-{{this._id}}" class="review-manage-box {{#if this.isManageOpen}}open{{/if}}">
                 <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/edit">
                   <div class="form-group">
                     <label for="title-{{this._id}}">Title</label>
-                    <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" required>
+                    <input id="title-{{this._id}}" name="title" type="text" value="{{this.title}}" maxlength="80" placeholder="Optional short headline">
                   </div>
                   <div class="form-group">
                     <label for="rating-{{this._id}}">Rating</label>
@@ -181,8 +218,12 @@
                   </div>
                   <div class="form-group">
                     <label for="body-{{this._id}}">Review</label>
-                    <textarea id="body-{{this._id}}" name="body" rows="3" required>{{this.body}}</textarea>
+                    <textarea id="body-{{this._id}}" name="body" rows="3" maxlength="1000" placeholder="Optional written review">{{this.body}}</textarea>
                   </div>
+                  <label class="checkbox-row" for="anonymous-{{this._id}}">
+                    <input id="anonymous-{{this._id}}" name="isAnonymous" type="checkbox" {{#if this.isAnonymous}}checked{{/if}}>
+                    <span>Keep this review anonymous on the restaurant page.</span>
+                  </label>
                   <button type="submit" class="login-button">Save Changes</button>
                 </form>
 
@@ -191,10 +232,8 @@
                 </form>
               </div>
             {{/if}}
-            
 
-            {{!-- Single or multiple images --}}
-            {{#if this.images}}
+            {{#if this.hasImages}}
               <div class="review-media images">
                 {{#each this.images}}
                   <div class="media-frame">
@@ -204,8 +243,7 @@
               </div>
             {{/if}}
 
-            {{!-- Single video (or videos array) --}}
-            {{#if this.videos}}
+            {{#if this.hasVideos}}
               <div class="review-media videos">
                 {{#each this.videos}}
                   <div class="media-frame">
@@ -219,24 +257,32 @@
             {{/if}}
 
             <div class="review-helpful">
-              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
-                <input type="hidden" name="direction" value="up">
-                <button
-                  type="submit"
-                  class="helpful-btn {{#if this.isUpvoted}}voted-up{{/if}} {{#if this.isDownvoted}}muted{{/if}}"
-                >
-                  Upvote
-                </button>
-              </form>
-              <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
-                <input type="hidden" name="direction" value="down">
-                <button
-                  type="submit"
-                  class="unhelpful-btn {{#if this.isDownvoted}}voted-down{{/if}} {{#if this.isUpvoted}}muted{{/if}}"
-                >
-                  Downvote
-                </button>
-              </form>
+              {{#if currentUser}}
+                {{#if this.canVote}}
+                  <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                    <input type="hidden" name="direction" value="up">
+                    <button
+                      type="submit"
+                      class="helpful-btn {{#if this.isUpvoted}}voted-up{{/if}} {{#if this.isDownvoted}}muted{{/if}}"
+                    >
+                      Helpful
+                    </button>
+                  </form>
+                  <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
+                    <input type="hidden" name="direction" value="down">
+                    <button
+                      type="submit"
+                      class="unhelpful-btn {{#if this.isDownvoted}}voted-down{{/if}} {{#if this.isUpvoted}}muted{{/if}}"
+                    >
+                      Unhelpful
+                    </button>
+                  </form>
+                {{else}}
+                  <span class="utility-copy">You cannot vote on your own review.</span>
+                {{/if}}
+              {{else}}
+                <a class="inline-link" href="/login">Login to vote</a>
+              {{/if}}
               <span>Score: {{this.voteScore}}</span>
             </div>
 
@@ -245,10 +291,23 @@
                 <form class="review-manage-form" method="POST" action="/reviews/{{this._id}}/respond">
                   <div class="form-group">
                     <label for="owner-response-{{this._id}}">Public owner response</label>
-                    <textarea id="owner-response-{{this._id}}" name="responseBody" rows="3" required>{{this.ownerResponse.body}}</textarea>
+                    <textarea
+                      id="owner-response-{{this._id}}"
+                      name="responseBody"
+                      rows="3"
+                      minlength="10"
+                      maxlength="500"
+                      required
+                    >{{this.ownerResponse.body}}</textarea>
                   </div>
                   <button type="submit" class="login-button">{{#if this.ownerResponse.body}}Update Response{{else}}Publish Response{{/if}}</button>
                 </form>
+
+                {{#if this.ownerResponse.body}}
+                  <form method="POST" action="/reviews/{{this._id}}/response/delete">
+                    <button type="submit" class="review-delete-button">Remove Owner Response</button>
+                  </form>
+                {{/if}}
               </div>
             {{/if}}
           </article>
@@ -261,86 +320,91 @@
 </main>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const inputImages = document.getElementById("inputImages");
-  const inputVideo = document.getElementById("inputVideo");
-  const previewFiles = document.querySelector(".media-files");
-  const mediaHelp = document.querySelector(".media-help");
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputImages = document.getElementById("inputImages");
+    const inputVideo = document.getElementById("inputVideo");
+    const previewFiles = document.querySelector(".media-files");
+    const mediaHelp = document.querySelector(".media-help");
+    const form = document.querySelector(".review-post-form");
 
-  function clearPreview() {
-    previewFiles.innerHTML = "";
-  }
+    if (!inputImages || !inputVideo || !previewFiles || !mediaHelp || !form) {
+      return;
+    }
 
-  function showImagePreviews(files) {
-    clearPreview();
-    const max = 3;
-    const list = Array.from(files).slice(0, max);
-    list.forEach(file => {
-      const url = URL.createObjectURL(file);
-      const img = document.createElement("img");
-      img.src = url;
-      img.className = "media-thumb";
-      img.alt = file.name;
-      previewFiles.appendChild(img);
-      // revoke object URL after image loads
-      img.onload = () => URL.revokeObjectURL(url);
+    function clearPreview() {
+      previewFiles.innerHTML = "";
+    }
+
+    function showImagePreviews(files) {
+      clearPreview();
+      const list = Array.from(files).slice(0, 3);
+
+      list.forEach((file) => {
+        const url = URL.createObjectURL(file);
+        const img = document.createElement("img");
+        img.src = url;
+        img.className = "media-thumb";
+        img.alt = file.name;
+        previewFiles.appendChild(img);
+        img.onload = () => URL.revokeObjectURL(url);
+      });
+
+      if (files.length > 3) {
+        const more = document.createElement("div");
+        more.className = "media-file-pill";
+        more.textContent = `+${files.length - 3} more`;
+        previewFiles.appendChild(more);
+      }
+
+      mediaHelp.textContent = "Images selected. Video input will be cleared.";
+    }
+
+    function showVideoPreview(file) {
+      clearPreview();
+      const pill = document.createElement("div");
+      pill.className = "media-file-pill";
+      pill.textContent = file.name;
+      previewFiles.appendChild(pill);
+      mediaHelp.textContent = "Video selected. Image input will be cleared.";
+    }
+
+    inputImages.addEventListener("change", (event) => {
+      const files = event.target.files;
+
+      if (!files || files.length === 0) {
+        clearPreview();
+        mediaHelp.textContent = "Attach up to 3 images or 1 video.";
+        return;
+      }
+
+      if (inputVideo.value) {
+        inputVideo.value = "";
+      }
+
+      showImagePreviews(files);
     });
-    if (files.length > max) {
-      const more = document.createElement("div");
-      more.className = "media-file-pill";
-      more.textContent = `+${files.length - max} more`;
-      previewFiles.appendChild(more);
-    }
-    mediaHelp.textContent = "Images selected (max 3). Video will be cleared.";
-  }
 
-  function showVideoPreview(file) {
-    clearPreview();
-    const pill = document.createElement("div");
-    pill.className = "media-file-pill";
-    pill.textContent = file.name;
-    previewFiles.appendChild(pill);
-    mediaHelp.textContent = "Video selected. Images will be cleared.";
-  }
+    inputVideo.addEventListener("change", (event) => {
+      const files = event.target.files;
 
-  inputImages.addEventListener("change", (e) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      clearPreview();
-      mediaHelp.textContent = "Optional: attach images or a video";
-      return;
-    }
-    // clear video input if any
-    if (inputVideo.value) {
-      inputVideo.value = "";
-    }
-    showImagePreviews(files);
+      if (!files || files.length === 0) {
+        clearPreview();
+        mediaHelp.textContent = "Attach up to 3 images or 1 video.";
+        return;
+      }
+
+      if (inputImages.value) {
+        inputImages.value = "";
+      }
+
+      showVideoPreview(files[0]);
+    });
+
+    form.addEventListener("submit", (event) => {
+      if (inputImages.files && inputImages.files.length > 3) {
+        event.preventDefault();
+        alert("Please select up to 3 images.");
+      }
+    });
   });
-
-  inputVideo.addEventListener("change", (e) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      clearPreview();
-      mediaHelp.textContent = "Optional: attach images or a video";
-      return;
-    }
-    // clear images input if any
-    if (inputImages.value) {
-      inputImages.value = "";
-    }
-    showVideoPreview(files[0]);
-  });
-
-  // optional: prevent selecting more than 3 images at the OS picker level is not possible,
-  // but we can warn on submit. Add a submit guard:
-  const form = document.querySelector(".review-post-form");
-  form.addEventListener("submit", (e) => {
-    if (inputImages.files && inputImages.files.length > 3) {
-      e.preventDefault();
-      alert("Please select up to 3 images.");
-      return false;
-    }
-    // allow submit; server will handle file limits as well
-  });
-});
 </script>

@@ -9,6 +9,7 @@ router.get("/", pageController.getWelcomePage);
 router.get("/welcome", pageController.getWelcomePage);
 router.get("/login", pageController.getLoginPage);
 router.get("/register", pageController.getRegisterPage);
+router.get("/about", pageController.getAboutPage);
 router.get("/contact", pageController.getContactPage);
 router.get("/admin-support", pageController.getContactPage);
 router.post("/admin-support/owner-request", requireAuth, ownerRequestController.create);

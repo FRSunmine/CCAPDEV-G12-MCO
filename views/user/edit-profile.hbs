@@ -14,34 +14,34 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="firstName">First Name</label>
-            <input id="firstName" name="firstName" type="text" value="{{formData.firstName}}" required>
+            <input id="firstName" name="firstName" type="text" value="{{formData.firstName}}" minlength="2" maxlength="40" pattern="[A-Za-z][A-Za-z\s'-]{1,39}" required>
           </div>
           <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input id="lastName" name="lastName" type="text" value="{{formData.lastName}}" required>
+            <input id="lastName" name="lastName" type="text" value="{{formData.lastName}}" minlength="2" maxlength="40" pattern="[A-Za-z][A-Za-z\s'-]{1,39}" required>
           </div>
         </div>
 
         <div class="form-grid">
           <div class="form-group">
             <label for="username">Username</label>
-            <input id="username" name="username" type="text" value="{{formData.username}}" required>
+            <input id="username" name="username" type="text" value="{{formData.username}}" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="{{formData.email}}" required>
+            <input id="email" name="email" type="email" value="{{formData.email}}" maxlength="100" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="profilePic">Profile Picture Path</label>
-          <input id="profilePic" name="profilePic" type="text" value="{{formData.profilePic}}" placeholder="/img/default_profile.png">
+          <input id="profilePic" name="profilePic" type="text" value="{{formData.profilePic}}" pattern="\/img\/[A-Za-z0-9/_\-.]+" placeholder="/img/default_profile.png">
           <p class="form-note">Use a local `/img/...` path or leave it blank to keep the default.</p>
         </div>
 
         <div class="form-group">
           <label for="bio">Bio</label>
-          <textarea id="bio" name="bio" rows="5">{{formData.bio}}</textarea>
+          <textarea id="bio" name="bio" rows="5" maxlength="280">{{formData.bio}}</textarea>
         </div>
 
         {{#if error}}

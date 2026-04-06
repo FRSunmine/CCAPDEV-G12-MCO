@@ -1,6 +1,7 @@
 const OwnerRequest = require("../models/OwnerRequest");
 const Restaurant = require("../models/Restaurant");
 const User = require("../models/User");
+const { validateOwnerRequestDetails } = require("./validationService");
 
 async function getOwnerRequestRestaurants() {
   const restaurants = await Restaurant.find({})
@@ -13,7 +14,7 @@ async function getOwnerRequestRestaurants() {
   }));
 }
 
-async function validateOwnerRequestSubmission({ restaurantId, contactDetails }) {
+async function validateOwnerRequestSubmission({ restaurantId, contactDetails, message = "" }) {
   const normalizedRestaurantId = restaurantId ? restaurantId.trim() : "";
   const normalizedContactDetails = contactDetails ? contactDetails.trim() : "";
 
@@ -21,8 +22,13 @@ async function validateOwnerRequestSubmission({ restaurantId, contactDetails }) 
     return { error: "Please choose a restaurant." };
   }
 
-  if (!normalizedContactDetails) {
-    return { error: "Please provide contact details for the owner request." };
+  const formValidationError = validateOwnerRequestDetails({
+    contactDetails: normalizedContactDetails,
+    message: message ? message.trim() : "",
+  });
+
+  if (formValidationError) {
+    return { error: formValidationError };
   }
 
   const restaurant = await Restaurant.findOne({ restaurantId: normalizedRestaurantId });
@@ -44,7 +50,7 @@ async function validateOwnerRequestSubmission({ restaurantId, contactDetails }) 
 }
 
 async function createPendingOwnerRequest({ userId, restaurantId, contactDetails, message = "" }) {
-  const validation = await validateOwnerRequestSubmission({ restaurantId, contactDetails });
+  const validation = await validateOwnerRequestSubmission({ restaurantId, contactDetails, message });
   if (validation.error) {
     return validation;
   }
