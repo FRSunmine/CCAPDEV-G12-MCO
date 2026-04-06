@@ -257,7 +257,7 @@
             {{/if}}
 
             <div class="review-helpful">
-              {{#if ../currentUser}}
+              {{#if @root.currentUser}}
                 {{#if this.canVote}}
                   <form class="vote-form" method="POST" action="/reviews/{{this._id}}/vote">
                     <input type="hidden" name="direction" value="up">
